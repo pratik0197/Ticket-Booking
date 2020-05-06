@@ -2,8 +2,8 @@ body{
     background-color: #E54050;    
 }
 .container-fluid{
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
 }
 /* Naviagtion Section */
 #navigation{
@@ -19,10 +19,31 @@ body{
 }
 
 /* Slideshow section */
-.d-block{
-    height: 500px;
-    width: 2rem;
+.carousel-image{
+    width: 100px;
+    padding: 20px 200px;
+    position: relative;
+    z-index: 1;
 }
+.carousel-text{
+    position: relative;
+    z-index: 2;
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 400;
+    color: white;
+    bottom: 500px;
+    left: 500px;
+    width: 500px;
+}
+.carousel-heading{
+    position: relative;
+    z-index: 2;
+    font-family: 'Fondamento',cursive;
+    bottom: 500px;
+    padding-bottom: 100px;
+    color: rgb(235, 213, 20);
+}
+
 #slideshow{
     text-align: center;
     background-color: #e16668;
