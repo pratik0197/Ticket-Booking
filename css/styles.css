@@ -1,5 +1,29 @@
-.navbar{
-    background-color: #E54050;
+body{
+    background-color: #E54050;    
+}
+.container-fluid{
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+/* Naviagtion Section */
+#navigation{
+    background-color: #E54050;    
+    line-height: 3rem;
 }
 
-#
+/* Booking section */
+#booking{
+    height: 500px;
+    background-color: #E54050;    
+
+}
+
+/* Slideshow section */
+.d-block{
+    height: 500px;
+    width: 2rem;
+}
+#slideshow{
+    text-align: center;
+    background-color: #e16668;
+}
