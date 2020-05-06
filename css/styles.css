@@ -22,25 +22,21 @@ body{
 .carousel-image{
     width: 100px;
     padding: 20px 200px;
-    position: relative;
-    z-index: 1;
+    /* z-index: 1; */
 }
 .carousel-text{
-    position: relative;
-    z-index: 2;
     font-family: 'Montserrat',sans-serif;
     font-weight: 400;
     color: white;
-    bottom: 500px;
-    left: 500px;
-    width: 500px;
+    /* width: 00px; */
+    text-align: center;
+    
+    padding-bottom: 20px;
 }
 .carousel-heading{
-    position: relative;
-    z-index: 2;
     font-family: 'Fondamento',cursive;
-    bottom: 500px;
-    padding-bottom: 100px;
+    /* bottom: 500px; */
+    /* padding-bottom: 100px; */
     color: rgb(235, 213, 20);
 }
 
