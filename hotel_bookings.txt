@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+     <head>
+      <title>Hotel details</title>
+     </head>
+
+     <body>
+      <p> Select city:  </p>
+      <br>
+       <label for="city">City:</label>
+
+       <select id="city">
+           <option value="delhi">Delhi</option>
+           <option value="bangalore">Bangalore</option>
+           <option value="mumbai">Mumbai</option>
+           <option value="bhubaneswar">Bhubaneswar</option>
+           <option value="chennai">Chennai</option>
+
+      <label for="from">Check in:</label> 
+
+      <input type="date" id="start" name="from"
+                    value="2020-05-08"
+                   min="2020-01-01" max="2020-12-31">
+
+      <br>
+       
+      <label for="to">Check out:</label>
+
+       <input type="date" id="start" name="to"
+                     value="2020-05-08"
+                      min="2020-01-01" max="2020-12-31">
+
+       <br>
+
+       <table>
+            <thead>
+                  <tr>
+                         <th>Hotel</th>
+                         <th>Stars</th>
+                         <th>Avaibility</th>
+                  </tr>
+            </thead>
+            <tbody>        
+                   <tr>
+                           <td>xyz</td>
+                           <td>0</td>        
+                           <td>2</td>
+            </tbody> 
+       </table>
+
+     </body>
+</html>
