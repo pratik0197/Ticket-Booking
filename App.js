@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const passportLocal = require('passport-local');
 const session = require('express-session');
 const passportLocalMongoose  = require('passport-local-mongoose');
 const app = express();
@@ -26,7 +27,8 @@ app.use(passport.session());
 
 mongoose.connect("mongodb://localhost:27017/TBS", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 });
 
 const userSchema = new mongoose.Schema({
@@ -44,7 +46,9 @@ userSchema.plugin(passportLocalMongoose);
 
 const user = new mongoose.model('User', userSchema);
 
-passport.use(new LocalStrategy(user.authenticate()));
+
+passport.use(user.createStrategy());
+
 passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
 
