@@ -57,3 +57,34 @@ body {
     padding-right: 30em;
     background-color: #abf0e9;
 }
+
+
+.form-group{
+    text-align: center;
+
+}
+.form-control{
+    text-align: center;
+}
+
+label{
+    display: inline-block;
+}
+#helpId{
+    display: block;
+    text-align: center;
+}
+.submit-btn{
+    padding: 10px;
+    text-align: center;
+}
+
+.hotel-img{
+    height: 300px;
+    width: 300px;
+}
+
+.hotel-indi{
+    display: inline-block;
+    padding: 100px;    
+}

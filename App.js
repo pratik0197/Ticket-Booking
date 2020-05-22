@@ -50,10 +50,13 @@ passport.deserializeUser(user.deserializeUser());
 const hotelSchema = mongoose.Schema({
     city: String,
     hotelName: String,
-    stars : String
+    stars: String,
+    contactNumber: String,
+    email: String,
+    imgURL: String
 });
 
-const Hotels = new  mongoose.model('Hotel',hotelSchema);
+const Hotels = new mongoose.model('Hotel', hotelSchema);
 
 app.route('/')
     .get(function (req, res) {
@@ -114,30 +117,42 @@ app.route('/signup')
 app.route("/hotels/:cityName")
     .get(function (req, res) {
         let city = req.params.cityName;
-        Hotels.find({city},function(err,docs){
+        Hotels.find({
+            city
+        }, function (err, docs) {
             res.send(docs);
         });
     })
 app.route("/hotels")
-    .get(function(req,res){
-        Hotels.find({},function(err,docs){
-            res.send(docs)
+    .get(function (req, res) {
+        Hotels.find({}, function (err, docs) {
+            res.render('hotels',{hotels:docs,loggedIn:true});
         })
     })
-    .post(function(req,res){
+    .post(function (req, res) {
         const newHotel = new Hotels({
-            hotelName: req.body.name,
             city: req.body.city,
-            stars :req.body.stars,
-            imgURL : req.body.imgURL
+            hotelName: req.body.name,
+            stars: req.body.stars,
+            contactNumber: req.body.phone,
+            email: req.body.email,
+            imgURL: req.body.imgURL
         });
-        newHotel.save(function(err){
-            if(err)
+        newHotel.save(function (err) {
+            if (err)
                 console.log(err);
-            else    
-                res.send('Success');
+            else
+                res.redirect('/hotels')
         });
     });
+
+app.route('/hotelAdmin')
+    .get(function (req, res) {
+        res.render('hotels_admin', {
+            loggedIn: true
+        });
+    })
+    .delete(function (req, res) {})
 let port = 3000;
 app.listen(port, function () {
     console.log("Server Listening to port 3000");

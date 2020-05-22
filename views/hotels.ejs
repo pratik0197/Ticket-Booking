@@ -1,0 +1,17 @@
+<%- include('./partials/header') %>
+
+<body>
+    <%- include('./partials/navbar') %>
+    <% hotels.forEach(function(hotel){ %>
+    <div class="hotel-indi">
+        <img src="<%= hotel.imgURL %>" alt="<%= hotel.hotelName %> 's image' " class="hotel-img">
+        <h1><%= hotel.hotelName %> </h1>
+        <h2><%= hotel.city %></h2>
+        <h3><%= hotel.stars %> <i class="fa fa-star" aria-hidden="true"></i>Hotel </h3>
+        <div class="contact-details">
+            Email: <%= hotel.email %><br>
+            Contact: <%= hotel.contactNumber  %>
+        </div>
+    </div>
+    <% }) %>
+</body>
