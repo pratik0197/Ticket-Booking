@@ -51,8 +51,10 @@ passport.deserializeUser(user.deserializeUser());
 
 app.route('/')
     .get(function (req, res) {
+        // console.log(req.user.username)
         res.render('index', {
-            loggedIn: req.isAuthenticated()
+            loggedIn: req.isAuthenticated(),
+            // val : req.isAuthenticated() ? req.user.username : "Nothing"
         });
     });
 
