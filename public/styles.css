@@ -1,52 +1,56 @@
-body{
-    background-color: #E54050;    
+body {
+    background-color: #E54050;
 }
-.container-fluid{
+
+.container-fluid {
     padding-left: 3rem;
     padding-right: 3rem;
 }
+
 /* Naviagtion Section */
-#navigation{
-    background-color: #E54050;    
+#navigation {
+    background-color: #E54050;
     line-height: 3rem;
 }
 
 /* Booking section */
-#booking{
+#booking {
     height: 500px;
-    background-color: #E54050;    
+    background-color: #E54050;
 
 }
 
 /* Slideshow section */
-.carousel-image{
+.carousel-image {
     width: 100px;
     padding: 20px 200px;
     /* z-index: 1; */
 }
-.carousel-text{
-    font-family: 'Montserrat',sans-serif;
+
+.carousel-text {
+    font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     color: white;
     /* width: 00px; */
     text-align: center;
-    
+
     padding-bottom: 20px;
 }
-.carousel-heading{
-    font-family: 'Fondamento',cursive;
+
+.carousel-heading {
+    font-family: 'Fondamento', cursive;
     /* bottom: 500px; */
     /* padding-bottom: 100px; */
     color: rgb(235, 213, 20);
 }
 
-#slideshow{
+#slideshow {
     text-align: center;
     background-color: #e16668;
 }
 
 
-.login-style{
+.login-style {
     text-align: center;
     padding: 10rem;
     padding-left: 30em;
