@@ -7,9 +7,7 @@ const passport = require('passport');
 const passportLocal = require('passport-local');
 const session = require('express-session');
 const passportLocalMongoose = require('passport-local-mongoose');
-const {
-    response
-} = require('express');
+
 const app = express();
 
 app.use(bodyParser.urlencoded({
@@ -35,8 +33,8 @@ mongoose.connect("mongodb://localhost:27017/TBS", {
 });
 
 const userSchema = new mongoose.Schema({
-    username :String,
-    password : String
+    username: String,
+    password: String
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -48,6 +46,14 @@ passport.use(user.createStrategy());
 
 passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
+
+const hotelSchema = mongoose.Schema({
+    city: String,
+    hotelName: String,
+    stars : String
+});
+
+const Hotels = new  mongoose.model('Hotel',hotelSchema);
 
 app.route('/')
     .get(function (req, res) {
@@ -68,8 +74,8 @@ app.route('/login')
             password: req.body.password
         });
         req.login(toBeLoggedInUser, function (err) {
-            if (err) { 
-                console.log(err); 
+            if (err) {
+                console.log(err);
                 res.redirect('/login');
             } else {
                 passport.authenticate('local')(req, res, function () {
@@ -96,8 +102,8 @@ app.route('/signup')
             username: req.body.username
         }, req.body.password, function (err, newUser) {
             if (err) {
-                console.log(err);
                 res.redirect('/signup');
+                // alert('UIs')
             } else {
                 passport.authenticate('local')(req, res, function () {
                     res.redirect('/');
@@ -105,7 +111,33 @@ app.route('/signup')
             }
         });
     });
-
+app.route("/hotels/:cityName")
+    .get(function (req, res) {
+        let city = req.params.cityName;
+        Hotels.find({city},function(err,docs){
+            res.send(docs);
+        });
+    })
+app.route("/hotels")
+    .get(function(req,res){
+        Hotels.find({},function(err,docs){
+            res.send(docs)
+        })
+    })
+    .post(function(req,res){
+        const newHotel = new Hotels({
+            hotelName: req.body.name,
+            city: req.body.city,
+            stars :req.body.stars,
+            imgURL : req.body.imgURL
+        });
+        newHotel.save(function(err){
+            if(err)
+                console.log(err);
+            else    
+                res.send('Success');
+        });
+    });
 let port = 3000;
 app.listen(port, function () {
     console.log("Server Listening to port 3000");
