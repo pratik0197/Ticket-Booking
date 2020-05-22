@@ -42,8 +42,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/login"><% if(loggedIn===true){ %>
-
+                        <a class="nav-link" href="/<%=loggedIn ? "logout":"login" %>"><% if(loggedIn===true){ %>
+                            
                             Logout
                             <% } else{ %>
                             Login <% } %>

@@ -68,8 +68,8 @@ app.route('/login')
             password: req.body.password
         });
         req.login(toBeLoggedInUser, function (err) {
-            if (err) {
-                console.log(err);
+            if (err) { 
+                console.log(err); 
                 res.redirect('/login');
             } else {
                 passport.authenticate('local')(req, res, function () {
