@@ -16,8 +16,14 @@ mongoose.connect("mongodb://localhost:27017/TBS", {
 });
 
 const userSchema = new mongoose.Schema({
-    name: String,
-    pwd: String
+    name: {
+        type: String,
+        required: true
+    },
+    pwd: {
+        type: String,
+        required: true
+    }
 });
 const user = new mongoose.model('User', userSchema);
 let isLoggedIn = false;
@@ -35,21 +41,23 @@ app.route('/login')
     }).post(function (req, res) {
         let name = req.body.email;
         let password = req.body.password;
-        
-        user.findOne({name:name},function(err,foundUser){
-            if(err)
+
+        user.findOne({
+            name: name
+        }, function (err, foundUser) {
+            if (err)
                 console.log('error');
-            else{
-                if(foundUser){
-                    if(foundUser.pwd===password){
+            else {
+                if (foundUser) {
+                    if (foundUser.pwd === password) {
                         isLoggedIn = true;
                         res.redirect('/');
-                    }
-                    else
-                        res.send('invalid user');
-                }
+                    } else
+                        res.send('invalid credentials');
+                } else
+                    res.send('user not found');
             }
-        });        
+        });
     });
 let port = 3000;
 app.listen(port, function () {
