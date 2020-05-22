@@ -1,0 +1,57 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
+const mongoose = require('mongoose');
+
+const app = express();
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+mongoose.connect("mongodb://localhost:27017/TBS", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const userSchema = new mongoose.Schema({
+    name: String,
+    pwd: String
+});
+const user = new mongoose.model('User', userSchema);
+let isLoggedIn = false;
+app.route('/')
+    .get(function (req, res) {
+        res.render('index', {
+            loggedIn: isLoggedIn
+        });
+    });
+
+
+app.route('/login')
+    .get(function (req, res) {
+        res.render('login');
+    }).post(function (req, res) {
+        let name = req.body.email;
+        let password = req.body.password;
+        
+        user.findOne({name:name},function(err,foundUser){
+            if(err)
+                console.log('error');
+            else{
+                if(foundUser){
+                    if(foundUser.pwd===password){
+                        isLoggedIn = true;
+                        res.redirect('/');
+                    }
+                    else
+                        res.send('invalid user');
+                }
+            }
+        });        
+    });
+let port = 3000;
+app.listen(port, function () {
+    console.log("Server Listening to port 3000");
+});

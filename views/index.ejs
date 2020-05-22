@@ -1,18 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://use.fontawesome.com/b913739be3.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fondamento&family=Montserrat:wght@400;900&display=swap"
-        rel="stylesheet">
-</head>
+<%- include ('partials/header.ejs') %> 
 
 <body>
     <section id="navigation">
@@ -56,7 +42,12 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Sign Up/Login/Logout</a>
+                        <a class="nav-link" href="/login"><% if(loggedIn===true){ %> 
+                            
+                            Logout
+                        <% } else{ %> 
+                        Login <% } %> 
+                        </a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">

@@ -44,3 +44,12 @@ body{
     text-align: center;
     background-color: #e16668;
 }
+
+
+.login-style{
+    text-align: center;
+    padding: 10rem;
+    padding-left: 30em;
+    padding-right: 30em;
+    background-color: #abf0e9;
+}
