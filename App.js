@@ -95,7 +95,7 @@ app.route("/logout") // logout route. Handled in  ./views/login page by manipula
         req.logout(function (err) {// When the request to logout comes, log the user out of the page. Passport handles this
             console.log(err); // If any errors encountered, inform the developer about the error
         });
-        res.redirect("/"); // redirect the user to home page and log him out of the page.
+        res.redirect('/signup'); // redirect the user to home page and log him out of the page.
     });
 
 app.route('/signup')
