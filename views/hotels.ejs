@@ -6,21 +6,25 @@
     <div class="hotel-indi row">
         <div class="card col-sm-4">
             <div class="pull-left ">
-                <img class="card-img-top hotel-img " src="<%= hotel.imgURL %>"
-                    alt="<%= hotel.hotelName %> 's image'">
-                
+                <img class="card-img-top hotel-img " src="<%= hotel.imgURL %>" alt="<%= hotel.hotelName %> 's image'">
             </div>
             <div class="card-body">
                 <h1><%= hotel.hotelName %> </h1>
                 <h2><%= hotel.city %></h2>
+
                 <h3><%= hotel.stars %> <i class="fa fa-star" aria-hidden="true"></i>Hotel </h3>
+                <p>Rooms Available :<%= hotel.rooms %> </p>
                 <div class="contact-details">
                     Email: <%= hotel.email %><br>
                     Contact: <%= hotel.contactNumber  %>
                 </div>
+                <form action="/book-hotel" method="POST">
+                    <input  type="hidden" value="<%= hotel.id %> " name="id">
+                    <button type="submit" class="btn btn-outline-primary">Book</button>
+                </form>
             </div>
             <!-- <p>hello</p> -->
         </div>
     </div>
     <% }) %>
-</body>
+    <%- include('./partials/footer.ejs') %>

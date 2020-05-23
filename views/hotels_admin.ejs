@@ -17,16 +17,16 @@
             Contact: <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number">
             Image for display: <input type="text" name="imgURL" class="form-control"
                 placeholder="Provide Image's URL for display">
-
+            Number of Rooms Provided to us: <input type="text" class="form-control"
+                placeholder="Enter number of rooms you provide us to manage" name="rooms">
 
         </div>
 
-        <small id="helpId" class="text-muted col-sm-6">We will verify the details provided by you and if not found legit, there
+        <small id="helpId" class="text-muted col-sm-6">We will verify the details provided by you and if not found
+            legit, there
             will be permanent ban from this portal</small>
         <div class="submit-btn col-sm-6">
             <button type="submit" class="btn btn-primary">Submit Details</button>
         </div>
     </form>
-</body>
-
-</html>
+    <%- include('./partials/footer.ejs') %>
