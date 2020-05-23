@@ -174,24 +174,23 @@ app.route('/book-hotel')
         if (!req.isAuthenticated())
             res.redirect('/login');
         else {
-            let id = ObjectId(req.body.id);
 
-            Hotels.findById(id, function (err, docs) {
-                if (err)
-                    console.log(err);
-                else {
-                    if (docs.rooms > 0) {
-                        docs.rooms--;
-                        docs.save();
-                    }
-                }
-            });
-            res.redirect('/hotels');
+            let passId = req.body.id;
+            res.redirect('/checkout/' + passId);
+
+            // res.redirect('/hotels');
         }
-        
+
     });
 
-
+app.route('/checkout/:passId')
+    .get(function (req, res) { 
+        let id = ObjectId(req.params.passId);
+        Hotels.findById(id,function(err,docs){
+            res.render('checkout',{loggedIn:true,city:docs.city,name:docs.hotelName});
+            
+        })
+    });
 
 
 let port = 3000;
