@@ -7,7 +7,7 @@ const passport = require('passport'); // An authentication and cookies library w
 const passportLocal = require('passport-local'); // Used internally by passport. No explicit calls made in code yet
 const session = require('express-session'); // Saves user login session until logged out.
 const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
-
+const ObjectId = require('mongodb').ObjectID;
 
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
@@ -170,11 +170,25 @@ app.route('/hotelAdmin') // Only privilege given to hotel admins. To upload the 
 
 
 app.route('/book-hotel')
-    .post(function(req,res){
-        if(!req.isAuthenticated())
+    .post(function (req, res) {
+        if (!req.isAuthenticated())
             res.redirect('/login');
-        let id = req.body.id;
-        Hotels.findByIdAndUpdate();
+        else {
+            let id = ObjectId(req.body.id);
+
+            Hotels.findById(id, function (err, docs) {
+                if (err)
+                    console.log(err);
+                else {
+                    if (docs.rooms > 0) {
+                        docs.rooms--;
+                        docs.save();
+                    }
+                }
+            });
+            res.redirect('/hotels');
+        }
+        
     });
 
 
