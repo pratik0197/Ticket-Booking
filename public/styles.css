@@ -80,11 +80,21 @@ label{
 }
 
 .hotel-img{
+    /* position: relative; */
+    /* display: inline-block; */
+    padding: 10px;
     height: 300px;
     width: 300px;
+    float: left;
 }
 
 .hotel-indi{
     display: inline-block;
-    padding: 100px;    
+    padding: 50px;    
+}
+.card-body{
+    display: inline;
+}
+.row{
+    display: flex;
 }

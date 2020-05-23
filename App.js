@@ -116,6 +116,9 @@ app.route('/signup')
             }
         });
     });
+
+
+// Route to get hotels sorted by particular city
 app.route("/hotels/:cityName") // route to select hotels filtered by city names
     .get(function (req, res) {
         let city = req.params.cityName; // get the name of city from the express routing parameters
