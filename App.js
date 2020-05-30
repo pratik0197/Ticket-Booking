@@ -7,7 +7,7 @@ const passport = require('passport'); // An authentication and cookies library w
 const passportLocal = require('passport-local'); // Used internally by passport. No explicit calls made in code yet
 const session = require('express-session'); // Saves user login session until logged out.
 const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
-const ObjectId = require('mongodb').ObjectID;
+const ObjectId = require('mongodb').ObjectID; // Required to convert string into an objectId
 
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
@@ -35,7 +35,11 @@ mongoose.connect("mongodb://localhost:27017/TBS", {
 // Connect mongoose to the localhost mongodb database. (While Development Phase). Change once produced.
 const userSchema = new mongoose.Schema({
     username: String,
-    password: String
+    password: String,
+    hotels: [{
+        id: String,
+        rooms: Number
+    }]
 }); // Create a schema for users having username and password, both as strings.
 
 userSchema.plugin(passportLocalMongoose); // Plugin passportLocalMongoose within user scheme to integrate with the collection users
@@ -205,7 +209,7 @@ app.route('/checkout/:passId') // Checkout page based on id of the hotel
                 console.log(err);
             else {
                 res.render('checkout', {
-                    name:docs.hotelName,
+                    name: docs.hotelName,
                     city: docs.city,
                     id: docs.id,
                     loggedIn: req.isAuthenticated()
@@ -225,7 +229,7 @@ app.route('/confirm-book')
             else if (docs.rooms < req.body.numRooms) {
                 res.redirect('/hotels');
             } else {
-                
+
                 const presentCustomers = docs.customers.filter(item => item.email === req.user.username);
                 if (presentCustomers.length > 0) {
                     console.log('No');
@@ -235,7 +239,14 @@ app.route('/confirm-book')
                         email: req.user.username,
                         roomsBooked: req.body.numRooms
                     });
+
                     docs.save();
+                    req.user.hotels.push({
+                        id:id,
+                        rooms:req.body.numRooms
+                    });
+                    req.user.save();
+                    // console.log(user);
                 }
                 res.redirect('/');
             }
