@@ -56,7 +56,19 @@ const hotelSchema = mongoose.Schema({
     contactNumber: String,
     email: String,
     imgURL: String,
-    rooms: Number
+    rooms: Number,
+    customers: [{
+        name: String,
+        email: String,
+        price: {
+            type: Number,
+            defualt: 2000
+        },
+        roomsBooked: {
+            type: Number,
+            defualt: 1
+        }
+    }]
 });
 // The schema for hotels . The data fields should be self-explanatory
 const Hotels = new mongoose.model('Hotel', hotelSchema);
@@ -174,7 +186,7 @@ app.route('/book-hotel')
         if (!req.isAuthenticated())
             res.redirect('/login');
         else {
-
+            // console.log(req.user.username);
             let passId = req.body.id;
             res.redirect('/checkout/' + passId);
 
@@ -183,14 +195,53 @@ app.route('/book-hotel')
 
     });
 
-app.route('/checkout/:passId')
-    .get(function (req, res) { 
+app.route('/checkout/:passId') // Checkout page based on id of the hotel
+    .get(function (req, res) { // Gets the checkout route
+
         let id = ObjectId(req.params.passId);
-        Hotels.findById(id,function(err,docs){
-            res.render('checkout',{loggedIn:true,city:docs.city,name:docs.hotelName});
-            
+        // let foundHotel = null;
+        Hotels.findById(id, function (err, docs) { // Searches the hotel.
+            if (err)
+                console.log(err);
+            else {
+                res.render('checkout', {
+                    name:docs.hotelName,
+                    city: docs.city,
+                    id: docs.id,
+                    loggedIn: req.isAuthenticated()
+                })
+            }
+        })
+
+    });
+
+
+app.route('/confirm-book')
+    .post(function (req, res) {
+        const id = ObjectId(req.body.id);
+        Hotels.findById(id, function (err, docs) {
+            if (err)
+                console.log(err);
+            else if (docs.rooms < req.body.numRooms) {
+                res.redirect('/hotels');
+            } else {
+                
+                const presentCustomers = docs.customers.filter(item => item.email === req.user.username);
+                if (presentCustomers.length > 0) {
+                    console.log('No');
+                } else {
+                    docs.rooms -= req.body.numRooms;
+                    docs.customers.push({
+                        email: req.user.username,
+                        roomsBooked: req.body.numRooms
+                    });
+                    docs.save();
+                }
+                res.redirect('/');
+            }
         })
     });
+
 
 
 let port = 3000;
