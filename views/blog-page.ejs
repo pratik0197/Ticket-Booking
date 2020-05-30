@@ -1,0 +1,15 @@
+<%- include('./partials/header.ejs') %>
+
+<body>
+
+    <%- include('./partials/navbar.ejs') %>
+
+    <% articles.forEach(article=>{ %>
+
+    <div class="blog-post">
+        <h1><%= article.title %> </h1>
+        <p><%= article.content %> </p>
+        <blockquote><%= article.author %> </blockquote>
+    </div>
+    <% }) %>
+    <%- include('./partials/footer.ejs')%>

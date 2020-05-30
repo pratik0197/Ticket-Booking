@@ -242,8 +242,8 @@ app.route('/confirm-book')
 
                     docs.save();
                     req.user.hotels.push({
-                        id:id,
-                        rooms:req.body.numRooms
+                        id: id,
+                        rooms: req.body.numRooms
                     });
                     req.user.save();
                     // console.log(user);
@@ -255,6 +255,34 @@ app.route('/confirm-book')
 
 
 
+
+
+const blogSchema = mongoose.Schema({
+    title: String,
+    content: String,
+    author: String
+});
+const blogs = mongoose.model('Blog', blogSchema);
+app.route('/blogs')
+    .post(function (req, res) {
+        const title = req.body.title;
+        const content = req.body.content;
+        const author = req.body.author;
+        const newBlog = new blogs({
+            title: title,
+            content: content,
+            author: author
+        });
+        newBlog.save();
+    })
+    .get(function (req, res) {
+        blogs.find({}, function (err, docs) {
+            res.render('blog-page', {
+                loggedIn: req.isAuthenticated(),
+                articles: docs
+            });
+        })
+    })
 let port = 3000;
 app.listen(port, function () {
     console.log("Server Listening to port 3000");
