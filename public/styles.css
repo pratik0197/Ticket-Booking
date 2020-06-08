@@ -134,3 +134,8 @@ label{
     text-align: center;
     padding: 20rem;
 }
+
+.PartialNotFound-image{
+    height: 400px;
+    width: 400px;
+}
