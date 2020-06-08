@@ -1,0 +1,25 @@
+<%- include('./partials/header.ejs') %>
+
+<body>
+    <div class="blog-enter">
+        <form action="/blogs" method="post">
+            <div class="form-group">
+                <label for="Blog Title">Blog Title</label>
+                <input type="text" class="form-control" name="title" id="" aria-describedby="helpId"
+                    placeholder="Enter the title">
+            </div>
+
+            <div class="form-group">
+                <label for="Blog Content">Content</label>
+                <textarea class="form-control" name="content" id="" rows="3"
+                    placeholder="enter content here"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="Blog Author">Author</label>
+                <input type="text" class="form-control" name="author" id="" aria-describedby="helpId"
+                    placeholder="Enter your name">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <%- include('./partials/footer.ejs')%>

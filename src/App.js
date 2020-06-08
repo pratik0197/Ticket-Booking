@@ -8,7 +8,7 @@ const passportLocal = require('passport-local'); // Used internally by passport.
 const session = require('express-session'); // Saves user login session until logged out.
 const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
 const ObjectId = require('mongodb').ObjectID; // Required to convert string into an objectId
-const path  = require('path') // Changing the File Streucture and hence need to modify some file strcutre
+const path = require('path') // Changing the File Streucture and hence need to modify some file strcutre
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
     extended: true // We have integrated the body-parser into the express.
 }));
 app.set('view engine', 'ejs'); // use ejs as our view engine and access ejs using node. Hence, we have to get the ejs files from views folder.
-const publicFilesDir = path.join(__dirname,'../public')
+const publicFilesDir = path.join(__dirname, '../public')
 app.use(express.static(publicFilesDir)); // use the static files such as styles.css by mentioning this.
 
 app.use(session({
@@ -277,6 +277,7 @@ app.route('/blogs')
             author: author
         });
         newBlog.save();
+        res.redirect('/blogs')
     })
     .get(function (req, res) {
         blogs.find({}, function (err, docs) {
@@ -286,6 +287,30 @@ app.route('/blogs')
             });
         })
     })
+app.get('/blogs/:title', function (req, res) {
+    blogs.findOne({
+        title: req.params.title
+    }, function (error, docs) {
+        if (error)
+            return res.send('Error occured');
+        
+        if (docs) {
+            // console.log(docs);
+            return res.render('indi-blog', {
+                title: docs.title,
+                content: docs.content,
+                author: docs.author
+            })
+        }
+        res.send('Deepshri could not find the blog')
+    })
+})
+app.get('/add-blog', function (req, res) {
+    if (!req.isAuthenticated())
+        return res.redirect('/login');
+    res.render('blog-addition-page');
+})
+
 let port = 3000;
 app.listen(port, function () {
     console.log("Server Listening to port 3000");
