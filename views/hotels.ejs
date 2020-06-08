@@ -1,6 +1,6 @@
 <%- include('./partials/header') %>
 
-<body>
+<!-- <body> -->
     <%- include('./partials/navbar') %>
     <% hotels.forEach(function(hotel){ %>
     <div class="hotel-indi row">
@@ -18,14 +18,18 @@
                     Email: <%= hotel.email %><br>
                     Contact: <%= hotel.contactNumber  %>
                 </div>
-                <form action="/book-hotel" method="POST">
-                    <input  type="hidden" value="<%=(hotel.id)%>" name="id">
-                    <button type="submit" class="btn btn-outline-primary">Book</button>
-                </form>
-                <form action="/cancel-hotel" method="POST">
-                    <input type="hidden" value="<%= hotel.id %>" name="id">
-                    <button type="submit" class="btn btn-outline-danger">Cancel</button>
-                </form>
+                
+				<div class="btn-group">
+					<form action="/book-hotel" method="POST">
+						<input  type="hidden" value="<%=(hotel.id)%>" name="id">
+						<button type="submit" class="btn btn-outline-primary" style="margin: 10px;">Book</button>
+                	</form>
+					<form action="/cancel-hotel" method="POST">
+						<input type="hidden" value="<%= hotel.id %>" name="id">
+						<button type="submit" class="btn btn-outline-danger" style="margin: 10px;">Cancel</button>
+                	</form>
+				</div>
+                
             </div>
             <!-- <p>hello</p> -->
         </div>
