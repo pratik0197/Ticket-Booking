@@ -236,20 +236,20 @@ app.route('/confirm-book')
     .post(function (req, res) {
         const id = ObjectId(req.body.id);
         Hotels.findById(id, function (err, docs) {
-            if (err)
+            if (err) 
                 console.log(err);
-            else if (docs.rooms < req.body.numRooms) {
+            else if (docs.rooms < req.body.numRooms) { // Case when we don't have enough rooms in the hotel which are vacant
                 res.redirect('/hotels');
             } else {
                 // return res.send(typeof req.body.checkIn);
-                const presentCustomers = docs.customers.filter(item => item.email === req.user.username);
+                const presentCustomers = docs.customers.filter(item => item.email === req.user.username); 
                 if (presentCustomers.length > 0) {
-                    console.log('No');
+                    console.log('No'); // We do not let any user book twice at a hotel and hence this line of code
                 } else {
-                    console.log(req.body.checkIn)
+                    // Calculate price of the stay based on difference in days. dateDiff implementation in src/dateDiff.js
                     const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn, req.body.checkOut);
-                    // const calcPrice = ;
-                    docs.rooms -= req.body.numRooms;
+                    
+                    docs.rooms -= req.body.numRooms; // reduce the number of rooms
                     docs.customers.push({
                         email: req.user.username,
                         roomsBooked: req.body.numRooms,
@@ -258,7 +258,7 @@ app.route('/confirm-book')
                         price: calcPrice
                     });
 
-                    docs.save();
+                    docs.save(); // update the hotel database
                     req.user.hotels.push({
                         id: id,
                         rooms: req.body.numRooms,
@@ -266,7 +266,7 @@ app.route('/confirm-book')
                         checkOut: req.body.checkOut,
                         price: calcPrice
                     });
-                    req.user.save();
+                    req.user.save(); // update the user database
                     // console.log(user);
                 }
                 res.redirect('/');
@@ -279,7 +279,7 @@ app.post('/cancel-hotel', function (req, res) {
     Hotels.findById(ide, function (err, docs) {
         // console.log(ide)
         {
-            if (req.isAuthenticated()) {
+            if (req.isAuthenticated()) { // if user is not authenticated he cannot cancel
                 if (!req.user.hotels.length > 0)
                     return res.redirect('/hotels');
                 let rooms = 0;
@@ -289,11 +289,11 @@ app.post('/cancel-hotel', function (req, res) {
                         rooms = hotel.rooms;
                     return hotel.id !== ide.toString();
                 })
-                req.user.save();
+                req.user.save(); // remove the number of rooms and the hotel details from user's info
 
-                docs.rooms += rooms;
-                docs.customers = docs.customers.filter((customer) => {
-                    return customer.email !== req.user.username
+                docs.rooms += rooms; // add up the rooms previously booked by the user
+                docs.customers = docs.customers.filter((customer) => { 
+                    return customer.email !== req.user.username // filter out the users
                 });
                 docs.save();
                 res.redirect('/hotels');
@@ -311,20 +311,19 @@ app.get('/manage-page/:id', function (req, res) {
         if (docs) {
             res.render('manager', {
                 loggedIn: true,
-                data: docs
+                data: docs // show the hotel managing page to the manager or receptionist of the hotel
             })
         } else
             res.redirect('/')
     })
 });
 
-app.post('/check-click', function (req, res) {
-    // console.log('Jerry')
-    const id = ObjectId(req.body.hotelId);
-    const mail = req.body.emailCustomer;
+app.post('/check-click', function (req, res) { // works when called for checking out a customer from a hotel. accessed via the key provided to the hotel management
+    const id = ObjectId(req.body.hotelId); // get the hotel id
+    const mail = req.body.emailCustomer; // get the customer mail which can be used as a primary key
     let rooms = 0;
     user.findOne({
-        username: mail
+        username: mail // search by the user's mail
     }, function (err, docs) {
         if(err)
             return res.redirect('/manage-page/'+id);
@@ -332,9 +331,9 @@ app.post('/check-click', function (req, res) {
             docs.hotels = docs.hotels.filter((hotel)=>{
                 if(hotel.id == id.toString())
                     rooms = hotel.rooms;
-                return hotel.id !== id.toString();
+                return hotel.id !== id.toString(); 
             })
-            docs.save();
+            docs.save(); // remove the hotel details from the user
             Hotels.findById(id, function (err, docss) {
                 if (err) {
                     console.log(err)
@@ -346,7 +345,7 @@ app.post('/check-click', function (req, res) {
                     docss.customers = docss.customers.filter((customer) => {
                         return customer.email !== mail
                     });
-                    docss.save();
+                    docss.save(); // remove the user details from the hotel. 
                     return res.redirect('/manage-page/' + id);
                 } else
                     return res.redirect('/manage-page/' + id);
@@ -362,6 +361,8 @@ app.post('/check-click', function (req, res) {
 
 
 ///////////////////////////////////////////// blogs part start///////////////////////
+
+// Sudhansu will take care of this part. For testing purpose only,the below code has been written 
 const blogSchema = mongoose.Schema({
     title: String,
     content: String,
@@ -426,6 +427,6 @@ app.get("*", function (req, res) {
 })
 
 let port = 3000;
-app.listen(port, function () {
+app.listen(port, function () {// Start the server
     console.log("Server Listening to port 3000");
 });
