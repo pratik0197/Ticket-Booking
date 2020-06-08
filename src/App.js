@@ -8,7 +8,10 @@ const passportLocal = require('passport-local'); // Used internally by passport.
 const session = require('express-session'); // Saves user login session until logged out.
 const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
 const ObjectId = require('mongodb').ObjectID; // Required to convert string into an objectId
-const path = require('path') // Changing the File Streucture and hence need to modify some file strcutre
+const path = require('path'); // Changing the File Streucture and hence need to modify some file strcutre
+const {
+    isObject
+} = require('util');
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -187,7 +190,6 @@ app.route('/hotelAdmin') // Only privilege given to hotel admins. To upload the 
 // One shortcoming, to save space on DB, ive used URL explicitly, anyone assigned this task is requested to come up with a better solution in which the proces occurs backgorund rather than infront of the user. Question of UX.
 
 
-
 app.route('/book-hotel')
     .post(function (req, res) {
         if (!req.isAuthenticated())
@@ -256,6 +258,30 @@ app.route('/confirm-book')
         })
     });
 
+app.post('/cancel-hotel', function (req, res) {
+    const ide = ObjectId(req.body.id);
+    Hotels.findById(ide, function (err, docs) {
+        // console.log(ide)
+        {
+            if (req.isAuthenticated() ) {
+                if(!req.user.hotels.length >0)
+                    return res.redirect('/hotels');
+                let rooms = req.user.hotels[0].rooms;
+                req.user.hotels = [] // because we can add only one hotel per user
+                // console.log(docs.rooms);
+                req.user.save();
+                // console.log(req.user.hotels);
+                docs.rooms += rooms;
+                docs.customers = docs.customers.filter((customer) => {
+                    return customer.email !== req.user.username
+                });
+                docs.save();
+                res.redirect('/');
+            } else
+                return res.redirect('/login');
+        }
+    })
+})
 
 
 
@@ -293,9 +319,8 @@ app.get('/blogs/:title', function (req, res) {
     }, function (error, docs) {
         if (error)
             return res.send('Error occured');
-        
+
         if (docs) {
-            // console.log(docs);
             return res.render('indi-blog', {
                 title: docs.title,
                 content: docs.content,
@@ -312,8 +337,12 @@ app.get('/add-blog', function (req, res) {
 })
 
 
-app.get("*",function(req,res){
-    res.render('404-page',{loggedIn:req.isAuthenticated()});
+
+
+app.get("*", function (req, res) {
+    res.render('404-page', {
+        loggedIn: req.isAuthenticated()
+    });
 })
 
 let port = 3000;

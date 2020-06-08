@@ -22,6 +22,10 @@
                     <input  type="hidden" value="<%=(hotel.id)%>" name="id">
                     <button type="submit" class="btn btn-outline-primary">Book</button>
                 </form>
+                <form action="/cancel-hotel" method="POST">
+                    <input type="hidden" value="<%= hotel.id %>" name="id">
+                    <button type="submit" class="btn btn-outline-danger">Cancel</button>
+                </form>
             </div>
             <!-- <p>hello</p> -->
         </div>
