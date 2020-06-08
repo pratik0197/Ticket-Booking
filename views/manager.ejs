@@ -1,0 +1,30 @@
+<%- include('./partials/header') %>
+
+<body style="text-align: center; align-content: center;">
+    <%- include('./partials/navbar')%>
+    <h1><%= data.hotelName %>,<%= data.city %> </h1>
+    <table class="table table-striped table-inverse table-responsive">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Email Of Customer</th>
+                <th>No.of Rooms Booked</th>
+                <th>CheckIn Date</th>
+                <th>CheckOutDate</th>
+                <th>Price</th>
+                <th>Check Out</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <% data.customers.forEach((customer)=>{ %>
+            <tr>
+                <td><%= customer.email %></td>
+                <td><%= customer.roomsBooked %> </td>
+                <td><%= customer.checkIn %></td>
+                <td><%= customer.checkOut %></td>
+                <td><%= customer.price %></td>
+            </tr>
+            <%  })%>
+        </tbody>
+    </table>
+    <%- include('./partials/footer')%>
