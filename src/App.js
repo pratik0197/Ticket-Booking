@@ -302,7 +302,7 @@ app.get('/blogs/:title', function (req, res) {
                 author: docs.author
             })
         }
-        res.send('Deepshri could not find the blog')
+        res.send('Could not find the blog')
     })
 })
 app.get('/add-blog', function (req, res) {
