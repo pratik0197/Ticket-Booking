@@ -311,6 +311,11 @@ app.get('/add-blog', function (req, res) {
     res.render('blog-addition-page');
 })
 
+
+app.get("*",function(req,res){
+    res.render('404-page',{loggedIn:req.isAuthenticated()});
+})
+
 let port = 3000;
 app.listen(port, function () {
     console.log("Server Listening to port 3000");
