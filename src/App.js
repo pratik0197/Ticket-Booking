@@ -266,17 +266,21 @@ app.post('/cancel-hotel', function (req, res) {
             if (req.isAuthenticated() ) {
                 if(!req.user.hotels.length >0)
                     return res.redirect('/hotels');
-                let rooms = req.user.hotels[0].rooms;
-                req.user.hotels = [] // because we can add only one hotel per user
-                // console.log(docs.rooms);
+                let rooms = 0;
+
+                req.user.hotels = req.user.hotels.filter((hotel)=>{
+                    if(hotel.id === ide.toString())
+                        rooms = hotel.rooms;
+                    return hotel.id !== ide.toString();
+                })
                 req.user.save();
-                // console.log(req.user.hotels);
+                
                 docs.rooms += rooms;
                 docs.customers = docs.customers.filter((customer) => {
                     return customer.email !== req.user.username
                 });
                 docs.save();
-                res.redirect('/');
+                res.redirect('/hotels');
             } else
                 return res.redirect('/login');
         }
