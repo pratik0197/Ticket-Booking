@@ -12,7 +12,9 @@ const path = require('path'); // Changing the File Streucture and hence need to 
 const {
     isObject
 } = require('util');
-const {dateDiff} = require('./dateDiff');
+const {
+    dateDiff
+} = require('./dateDiff');
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -245,14 +247,14 @@ app.route('/confirm-book')
                     console.log('No');
                 } else {
                     console.log(req.body.checkIn)
-                    const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn,req.body.checkOut);
+                    const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn, req.body.checkOut);
                     // const calcPrice = ;
                     docs.rooms -= req.body.numRooms;
                     docs.customers.push({
                         email: req.user.username,
                         roomsBooked: req.body.numRooms,
-                        checkIn : req.body.checkIn,
-                        checkOut : req.body.checkOut,
+                        checkIn: req.body.checkIn,
+                        checkOut: req.body.checkOut,
                         price: calcPrice
                     });
 
@@ -260,9 +262,9 @@ app.route('/confirm-book')
                     req.user.hotels.push({
                         id: id,
                         rooms: req.body.numRooms,
-                        checkIn:req.body.checkIn,
+                        checkIn: req.body.checkIn,
                         checkOut: req.body.checkOut,
-                        price:calcPrice
+                        price: calcPrice
                     });
                     req.user.save();
                     // console.log(user);
@@ -316,6 +318,47 @@ app.get('/manage-page/:id', function (req, res) {
     })
 });
 
+app.post('/check-click', function (req, res) {
+    // console.log('Jerry')
+    const id = ObjectId(req.body.hotelId);
+    const mail = req.body.emailCustomer;
+    let rooms = 0;
+    user.findOne({
+        username: mail
+    }, function (err, docs) {
+        if(err)
+            return res.redirect('/manage-page/'+id);
+        if(docs){
+            docs.hotels = docs.hotels.filter((hotel)=>{
+                if(hotel.id == id.toString())
+                    rooms = hotel.rooms;
+                return hotel.id !== id.toString();
+            })
+            docs.save();
+            Hotels.findById(id, function (err, docss) {
+                if (err) {
+                    console.log(err)
+                    return res.redirect('/manage-page/' + id);
+                }
+                if (docss) {
+                    
+                    docss.rooms += rooms;
+                    docss.customers = docss.customers.filter((customer) => {
+                        return customer.email !== mail
+                    });
+                    docss.save();
+                    return res.redirect('/manage-page/' + id);
+                } else
+                    return res.redirect('/manage-page/' + id);
+                // res.redirect('/')
+            })
+        }
+        else
+            return res.redirect('/manage-page/'+id);
+        
+    })
+    
+})
 
 
 ///////////////////////////////////////////// blogs part start///////////////////////

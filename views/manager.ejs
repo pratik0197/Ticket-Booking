@@ -23,6 +23,14 @@
                 <td><%= customer.checkIn %></td>
                 <td><%= customer.checkOut %></td>
                 <td><%= customer.price %></td>
+                <td>
+                    <form action="/check-click" method="POST">
+                        
+                        <input type="hidden" name="emailCustomer" value="<%=customer.email%>">
+                        <input type="hidden" name="hotelId" value="<%=data.id%>">
+                        <input type="checkbox" onchange="this.form.submit()">
+                    </form>
+                </td>
             </tr>
             <%  })%>
         </tbody>
