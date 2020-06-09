@@ -1,4 +1,4 @@
-# Ticket-Booking
+# Ticket-Booking & Blogging Site
 
 
 This is a Ticket Booking Application for booking hotels and flights easily. We have not yet added the transaction feature.
