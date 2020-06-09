@@ -41,7 +41,7 @@ app.use(passport.initialize()); // Initialise the passport library which does th
 
 app.use(passport.session()); // The main session starts here. Integrate Passport And Express session
 
-mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS", {
+mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS",{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -330,8 +330,9 @@ app.post('/check-click', function (req, res) { // works when called for checking
     user.findOne({
         username: mail // search by the user's mail
     }, function (err, docs) {
-        if(err)
-            return res.redirect('/manage-page/'+id);
+        if(err){
+			return res.redirect('/manage-page/'+id);
+		}
         if(docs){
             docs.hotels = docs.hotels.filter((hotel)=>{
                 if(hotel.id == id.toString())
@@ -357,73 +358,15 @@ app.post('/check-click', function (req, res) { // works when called for checking
                 // res.redirect('/')
             })
         }
-        else
-            return res.redirect('/manage-page/'+id);
-        
-    })
+        else{
+			return res.redirect('/manage-page/' + id);
+		}     
+    });
     
-})
+});
 
 
-///////////////////////////////////////////// blogs part start///////////////////////
 
-// Sudhansu will take care of this part. For testing purpose only,the below code has been written 
-
-// const blogSchema = mongoose.Schema({
-//     title: String,
-//     content: String,
-//     author: String
-// });
-// const blogs = mongoose.model('Blog', blogSchema);
-// app.route('/blogs')
-//     .post(function (req, res) {
-//         const title = req.body.title;
-//         const content = req.body.content;
-//         const author = req.body.author;
-//         const newBlog = new blogs({
-//             title: title,
-//             content: content,
-//             author: author
-//         });
-//         newBlog.save();
-//         res.redirect('/blogs')
-//     })
-//     .get(function (req, res) {
-//         blogs.find({}, function (err, docs) {
-//             res.render('blog-page', {
-//                 loggedIn: req.isAuthenticated(),
-//                 articles: docs
-//             });
-//         })
-//     })
-
-
-// app.get('/blogs/:title', function (req, res) {
-//     blogs.findOne({
-//         title: req.params.title
-//     }, function (error, docs) {
-//         if (error)
-//             return res.send('Error occured');
-
-//         if (docs) {
-//             return res.render('indi-blog', {
-//                 title: docs.title,
-//                 content: docs.content,
-//                 author: docs.author
-//             })
-//         }
-//         res.send('Could not find the blog')
-//     })
-// })
-
-
-// app.get('/add-blog', function (req, res) {
-//     if (!req.isAuthenticated())
-//         return res.redirect('/login');
-//     res.render('blog-addition-page');
-// })
-
-//------------------BY SUDHANSU -----------------------------//
 //MONGOOSE Model Config.
 var blogSchema = new mongoose.Schema({
     title: String,
@@ -434,13 +377,6 @@ var blogSchema = new mongoose.Schema({
 
 var Blog = mongoose.model("Blog",blogSchema);
 
-//RESTFUL Routes
-
-// app.get("/",function (req,res){
-//     res.render("index");
-// })
-
-//INDEX
 app.get("/blogs",function(req,res){
     Blog.find({},function(err,blogs){
         if(err){
@@ -451,12 +387,10 @@ app.get("/blogs",function(req,res){
     })
 })
 
-//NEW
 app.get("/blogs/new",function(req,res) {
     res.render("blog_new");
 })
 
-//CREATE
 app.post("/blogs",function(req,res){
     //sanitizing the post
     req.body.blog.body = req.sanitize(req.body.blog.body);
@@ -470,7 +404,6 @@ app.post("/blogs",function(req,res){
     });
 });
 
-//SHOW
 app.get("/blogs/:id",function(req,res){
     Blog.findById(req.params.id,function(err,foundBlog){
         if(err){
@@ -492,7 +425,6 @@ app.get("/blogs/:id/edit",function(req,res){
     })
 })
 
-//UPDATE
 app.put("/blogs/:id",function(req,res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
 
@@ -505,7 +437,6 @@ app.put("/blogs/:id",function(req,res){
     })
 })
 
-//DESTROY
 app.delete("/blogs/:id",function(req,res){
     Blog.findByIdAndRemove(req.params.id,function(err){
         if(err){
@@ -516,7 +447,6 @@ app.delete("/blogs/:id",function(req,res){
     })
 })
 
-///////////////////////////////////////////////// Blog Part Ends/////////////////////////////////////
 
 app.get("*", function (req, res) {
     res.render('404-page', {
