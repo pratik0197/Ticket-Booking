@@ -41,7 +41,7 @@ app.use(passport.initialize()); // Initialise the passport library which does th
 
 app.use(passport.session()); // The main session starts here. Integrate Passport And Express session
 
-mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS", {
+mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS",{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -330,8 +330,9 @@ app.post('/check-click', function (req, res) { // works when called for checking
     user.findOne({
         username: mail // search by the user's mail
     }, function (err, docs) {
-        if(err)
-            return res.redirect('/manage-page/'+id);
+        if(err){
+			return res.redirect('/manage-page/'+id);
+		}
         if(docs){
             docs.hotels = docs.hotels.filter((hotel)=>{
                 if(hotel.id == id.toString())
@@ -357,12 +358,12 @@ app.post('/check-click', function (req, res) { // works when called for checking
                 // res.redirect('/')
             })
         }
-        else
-            return res.redirect('/manage-page/'+id);
-        
-    })
+        else{
+			return res.redirect('/manage-page/' + id);
+		}     
+    });
     
-})
+});
 
 
 
@@ -376,13 +377,6 @@ var blogSchema = new mongoose.Schema({
 
 var Blog = mongoose.model("Blog",blogSchema);
 
-//RESTFUL Routes
-
-// app.get("/",function (req,res){
-//     res.render("index");
-// })
-
-//INDEX
 app.get("/blogs",function(req,res){
     Blog.find({},function(err,blogs){
         if(err){
@@ -393,12 +387,10 @@ app.get("/blogs",function(req,res){
     })
 })
 
-//NEW
 app.get("/blogs/new",function(req,res) {
     res.render("blog_new");
 })
 
-//CREATE
 app.post("/blogs",function(req,res){
     //sanitizing the post
     req.body.blog.body = req.sanitize(req.body.blog.body);
@@ -412,7 +404,6 @@ app.post("/blogs",function(req,res){
     });
 });
 
-//SHOW
 app.get("/blogs/:id",function(req,res){
     Blog.findById(req.params.id,function(err,foundBlog){
         if(err){
@@ -434,7 +425,6 @@ app.get("/blogs/:id/edit",function(req,res){
     })
 })
 
-//UPDATE
 app.put("/blogs/:id",function(req,res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
 
@@ -447,7 +437,6 @@ app.put("/blogs/:id",function(req,res){
     })
 })
 
-//DESTROY
 app.delete("/blogs/:id",function(req,res){
     Blog.findByIdAndRemove(req.params.id,function(err){
         if(err){
