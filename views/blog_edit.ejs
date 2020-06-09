@@ -1,0 +1,22 @@
+<%- include("semantic-partials/header") %> 
+
+<div class="ui main text container segment">
+    <div class="ui huge header">Edit <%= blog.title %> </div>
+    <form class="ui form" action="/blogs/<%= blog._id %>?_method=PUT" method="POST"> <!---IMP LINE : Method Override-->
+        <div class="field">
+            <label for="blog[title]">Title</label>
+            <input type="text" name="blog[title]" placeholder="title" value="<%= blog.title %>">
+        </div>
+        <div class="field">
+            <label for="blog[image]">Image Url</label>
+            <input type="text" name="blog[image]" placeholder="image" value="<%= blog.image %>">
+        </div>
+        <div class="field">
+            <label for="blog[body]">Blog Content</label>
+            <textarea name="blog[body]" id="" cols="30" rows="10" placeholder="Post goes here" required><%= blog.body %></textarea>
+        </div>
+        <input class="ui purple big basic button" type="submit">
+    </form>
+</div>
+
+<%- include("semantic-partials/footer") %>
