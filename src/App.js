@@ -1,20 +1,23 @@
 require('dotenv').config(); // contains secure details about hash and salt to secure the password . Do not touch this, if you want your DB to be consistent.
-const express = require('express'); // Includes Express, backend web framework to  be used with Node.js
-const bodyParser = require('body-parser'); // library to parse details in the forms
-const ejs = require('ejs'); // embedded javascript to write javascript inside HTML to make it more robust and help in reusing a single piece of HTML code in  multiple files
-const mongoose = require('mongoose'); // A medium for operating on our mongodb database using Node.js
-const passport = require('passport'); // An authentication and cookies library which helps in making passwords secure and hashed, adding salting.
-const passportLocal = require('passport-local'); // Used internally by passport. No explicit calls made in code yet
-const session = require('express-session'); // Saves user login session until logged out.
-const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
-const ObjectId = require('mongodb').ObjectID; // Required to convert string into an objectId
-const path = require('path'); // Changing the File Streucture and hence need to modify some file strcutre
+const 	express 		= require('express'), // Includes Express, backend web framework to  be used with Node.js
+	  	bodyParser 		= require('body-parser'), // library to parse details in the forms
+	  	ejs 			= require('ejs'),// embedded javascript to write javascript inside HTML to make it more robust and help in reusing a single piece of HTML code in  multiple files
+ 	  	mongoose 		= require('mongoose'),// A medium for operating on our mongodb database using Node.js
+ 		passport 		= require('passport'),// An authentication and cookies library which helps in making passwords secure and hashed, adding salting.
+ 		passportLocal 	= require('passport-local'),// Used internally by passport. No explicit calls made in code yet
+ 		session 		= require('express-session'),// Saves user login session until logged out.
+ 		passportLocalMongoose = require('passport-local-mongoose'),// used to combine mongoose and passport to automatically save users into the Database.
+ 		ObjectId 		= require('mongodb').ObjectID,// Required to convert string into an objectId
+ 		path 			= require('path'),//Changing the File Streucture and hence need to modify some file strcutre
+		methodOverride  = require("method-override"),
+    	expressSanitizer= require("express-sanitizer");
 const {
     isObject
 } = require('util');
 const {
     dateDiff
 } = require('./dateDiff');
+
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -25,6 +28,8 @@ app.use(bodyParser.urlencoded({
 app.set('view engine', 'ejs'); // use ejs as our view engine and access ejs using node. Hence, we have to get the ejs files from views folder.
 const publicFilesDir = path.join(__dirname, '../public')
 app.use(express.static(publicFilesDir)); // use the static files such as styles.css by mentioning this.
+app.use(expressSanitizer());
+app.use(methodOverride("_method"));
 
 app.use(session({
     secret: process.env.SECRET, // secret stored in a secret file 
@@ -363,60 +368,153 @@ app.post('/check-click', function (req, res) { // works when called for checking
 ///////////////////////////////////////////// blogs part start///////////////////////
 
 // Sudhansu will take care of this part. For testing purpose only,the below code has been written 
-const blogSchema = mongoose.Schema({
+
+// const blogSchema = mongoose.Schema({
+//     title: String,
+//     content: String,
+//     author: String
+// });
+// const blogs = mongoose.model('Blog', blogSchema);
+// app.route('/blogs')
+//     .post(function (req, res) {
+//         const title = req.body.title;
+//         const content = req.body.content;
+//         const author = req.body.author;
+//         const newBlog = new blogs({
+//             title: title,
+//             content: content,
+//             author: author
+//         });
+//         newBlog.save();
+//         res.redirect('/blogs')
+//     })
+//     .get(function (req, res) {
+//         blogs.find({}, function (err, docs) {
+//             res.render('blog-page', {
+//                 loggedIn: req.isAuthenticated(),
+//                 articles: docs
+//             });
+//         })
+//     })
+
+
+// app.get('/blogs/:title', function (req, res) {
+//     blogs.findOne({
+//         title: req.params.title
+//     }, function (error, docs) {
+//         if (error)
+//             return res.send('Error occured');
+
+//         if (docs) {
+//             return res.render('indi-blog', {
+//                 title: docs.title,
+//                 content: docs.content,
+//                 author: docs.author
+//             })
+//         }
+//         res.send('Could not find the blog')
+//     })
+// })
+
+
+// app.get('/add-blog', function (req, res) {
+//     if (!req.isAuthenticated())
+//         return res.redirect('/login');
+//     res.render('blog-addition-page');
+// })
+
+//------------------BY SUDHANSU -----------------------------//
+//MONGOOSE Model Config.
+var blogSchema = new mongoose.Schema({
     title: String,
-    content: String,
-    author: String
+    image: String,
+    body: String,
+    created: {type:Date, default: Date.now}
 });
-const blogs = mongoose.model('Blog', blogSchema);
-app.route('/blogs')
-    .post(function (req, res) {
-        const title = req.body.title;
-        const content = req.body.content;
-        const author = req.body.author;
-        const newBlog = new blogs({
-            title: title,
-            content: content,
-            author: author
-        });
-        newBlog.save();
-        res.redirect('/blogs')
-    })
-    .get(function (req, res) {
-        blogs.find({}, function (err, docs) {
-            res.render('blog-page', {
-                loggedIn: req.isAuthenticated(),
-                articles: docs
-            });
-        })
-    })
 
+var Blog = mongoose.model("Blog",blogSchema);
 
-app.get('/blogs/:title', function (req, res) {
-    blogs.findOne({
-        title: req.params.title
-    }, function (error, docs) {
-        if (error)
-            return res.send('Error occured');
+//RESTFUL Routes
 
-        if (docs) {
-            return res.render('indi-blog', {
-                title: docs.title,
-                content: docs.content,
-                author: docs.author
-            })
+// app.get("/",function (req,res){
+//     res.render("index");
+// })
+
+//INDEX
+app.get("/blogs",function(req,res){
+    Blog.find({},function(err,blogs){
+        if(err){
+            console.log("ERROR!");
+        }else{
+            res.render("blog_index",{blogs: blogs});
         }
-        res.send('Could not find the blog')
     })
 })
 
-
-app.get('/add-blog', function (req, res) {
-    if (!req.isAuthenticated())
-        return res.redirect('/login');
-    res.render('blog-addition-page');
+//NEW
+app.get("/blogs/new",function(req,res) {
+    res.render("blog_new");
 })
 
+//CREATE
+app.post("/blogs",function(req,res){
+    //sanitizing the post
+    req.body.blog.body = req.sanitize(req.body.blog.body);
+    
+    Blog.create(req.body.blog,function(err,newBlog){
+        if(err){
+            res.render("blog_new");
+        }else{
+            res.redirect("/blogs");
+        }
+    });
+});
+
+//SHOW
+app.get("/blogs/:id",function(req,res){
+    Blog.findById(req.params.id,function(err,foundBlog){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.render("blog_show",{blog:foundBlog});
+        }
+    })
+})
+
+//EDIT
+app.get("/blogs/:id/edit",function(req,res){
+    Blog.findById(req.params.id,function(err,foundBlog){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.render("blog_edit",{blog:foundBlog});
+        }
+    })
+})
+
+//UPDATE
+app.put("/blogs/:id",function(req,res){
+    req.body.blog.body = req.sanitize(req.body.blog.body);
+
+    Blog.findByIdAndUpdate(req.params.id, req.body.blog,function(err,updatedBlog){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.redirect("/blogs/"+req.params.id);
+        }
+    })
+})
+
+//DESTROY
+app.delete("/blogs/:id",function(req,res){
+    Blog.findByIdAndRemove(req.params.id,function(err){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.redirect("/blogs");
+        }
+    })
+})
 
 ///////////////////////////////////////////////// Blog Part Ends/////////////////////////////////////
 
