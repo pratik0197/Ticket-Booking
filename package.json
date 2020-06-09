@@ -1,7 +1,7 @@
 {
   "name": "ticket-booking",
   "version": "1.0.0",
-  "description": "",
+  "description": "A ticket booking Application for the DBMS project using DS-ALGO, MYSQL as database.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

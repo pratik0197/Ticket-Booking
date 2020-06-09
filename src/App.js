@@ -1,14 +1,16 @@
 require('dotenv').config(); // contains secure details about hash and salt to secure the password . Do not touch this, if you want your DB to be consistent.
-const express = require('express'); // Includes Express, backend web framework to  be used with Node.js
-const bodyParser = require('body-parser'); // library to parse details in the forms
-const ejs = require('ejs'); // embedded javascript to write javascript inside HTML to make it more robust and help in reusing a single piece of HTML code in  multiple files
-const mongoose = require('mongoose'); // A medium for operating on our mongodb database using Node.js
-const passport = require('passport'); // An authentication and cookies library which helps in making passwords secure and hashed, adding salting.
-const passportLocal = require('passport-local'); // Used internally by passport. No explicit calls made in code yet
-const session = require('express-session'); // Saves user login session until logged out.
-const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
-const ObjectId = require('mongodb').ObjectID; // Required to convert string into an objectId
-const path = require('path'); // Changing the File Streucture and hence need to modify some file strcutre
+const 	express 		= require('express'), // Includes Express, backend web framework to  be used with Node.js
+	  	bodyParser 		= require('body-parser'), // library to parse details in the forms
+	  	ejs 			= require('ejs'),// embedded javascript to write javascript inside HTML to make it more robust and help in reusing a single piece of HTML code in  multiple files
+ 	  	mongoose 		= require('mongoose'),// A medium for operating on our mongodb database using Node.js
+ 		passport 		= require('passport'),// An authentication and cookies library which helps in making passwords secure and hashed, adding salting.
+ 		passportLocal 	= require('passport-local'),// Used internally by passport. No explicit calls made in code yet
+ 		session 		= require('express-session'),// Saves user login session until logged out.
+ 		passportLocalMongoose = require('passport-local-mongoose'),// used to combine mongoose and passport to automatically save users into the Database.
+ 		ObjectId 		= require('mongodb').ObjectID,// Required to convert string into an objectId
+ 		path 			= require('path'),//Changing the File Streucture and hence need to modify some file strcutre
+		methodOverride  = require("method-override"),
+    	expressSanitizer= require("express-sanitizer");
 const {
     isObject
 } = require('util');
@@ -40,7 +42,7 @@ app.use(passport.initialize()); // Initialise the passport library which does th
 
 app.use(passport.session()); // The main session starts here. Integrate Passport And Express session
 
-mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS", {
+mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS",{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -345,11 +347,12 @@ app.post('/check-click', function (req, res) { // works when called for checking
     user.findOne({
         username: mail // search by the user's mail
     }, function (err, docs) {
-        if (err)
-            return res.redirect('/manage-page/' + id);
-        if (docs) {
-            docs.hotels = docs.hotels.filter((hotel) => {
-                if (hotel.id == id.toString())
+        if(err){
+			return res.redirect('/manage-page/'+id);
+		}
+        if(docs){
+            docs.hotels = docs.hotels.filter((hotel)=>{
+                if(hotel.id == id.toString())
                     rooms = hotel.rooms;
                 return hotel.id !== id.toString();
             })
@@ -371,13 +374,15 @@ app.post('/check-click', function (req, res) { // works when called for checking
                     return res.redirect('/manage-page/' + id);
                 // res.redirect('/')
             })
-        } else
-            return res.redirect('/manage-page/' + id);
+        }
+        else{
+			return res.redirect('/manage-page/' + id);
+		}     
+    });
+    
+});
 
-    })
 
-})
-////
 
 //MONGOOSE Model Config.
 var blogSchema = new mongoose.Schema({
@@ -437,6 +442,7 @@ app.get("/blogs/:id/edit",function(req,res){
     })
 })
 
+
 app.put("/blogs/:id",function(req,res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
 
@@ -458,10 +464,6 @@ app.delete("/blogs/:id",function(req,res){
         }
     })
 })
-
-
-//// Blogs Here 
-////
 
 app.get("*", function (req, res) {
     res.render('404-page', {
