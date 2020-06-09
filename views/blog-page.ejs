@@ -11,7 +11,7 @@
         <% if(article.content.length < 100){ %>
         <p><%= article.content %> </p>
         <% }else{ %>
-        <p><%= article.content.substr(0,100) %>...</p><a href="/blogs/<%=articles.title%>">Read More</a>
+        <p><%= article.content.substr(0,100) %>...</p><a href="/blogs/<%=article.title%>">Read More</a>
         <% } %>
         <blockquote><%= article.author %> </blockquote>
     </div>
