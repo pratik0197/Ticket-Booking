@@ -1,0 +1,33 @@
+<%- include('./partials/header') %>
+
+<body>
+    <%- include('./partials/navbar') %>
+
+    <form action="/hotels" method="POST">
+        <div class="col-sm-6 form-group ">
+            <label for="name">Name of the hotel: </label>
+            <input type="text" name="name" class="form-control" placeholder="Enter Hotel's Name"
+                aria-describedby="hotel-name">
+            <label for="city"> City :</label> <input type="text" name="city" class="form-control"
+                placeholder="Enter City Name" aria-describedby="city-name">
+            <label for="stars">Rating:</label> <input type="text" name="stars" class="form-control"
+                placeholder="Enter Hotel's Rating" aria-describedby="hotel-rating">
+            <label for="email">Email :</label> <input type="text" name="email" class="form-control"
+                placeholder="Enter Hotel's Email ID">
+            Contact: <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number">
+            Image for display: <input type="text" name="imgURL" class="form-control"
+                placeholder="Provide Image's URL for display">
+            Number of Rooms Provided to us: <input type="text" class="form-control"
+                placeholder="Enter number of rooms you provide us to manage" name="rooms">
+            Price of each Room : <input type="text" class="form-control"
+            placeholder="Enter number of rooms you provide us to manage" name="price">
+        </div>
+
+        <small id="helpId" class="text-muted col-sm-6">We will verify the details provided by you and if not found
+            legit, there
+            will be permanent ban from this portal</small>
+        <div class="submit-btn col-sm-6">
+            <button type="submit" class="btn btn-primary">Submit Details</button>
+        </div>
+    </form>
+    <%- include('./partials/footer.ejs') %>

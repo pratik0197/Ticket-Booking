@@ -1,0 +1,131 @@
+body {
+    background-color: #E54050;
+}
+
+.container-fluid {
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+/* Naviagtion Section */
+#navigation {
+    background-color: #E54050;
+    line-height: 3rem;
+}
+
+/* Booking section */
+#booking {
+    height: 500px;
+    background-color: #E54050;
+
+}
+
+/* Slideshow section */
+.carousel-image {
+    width: 100px;
+    padding: 20px 200px;
+    /* z-index: 1; */
+}
+
+.carousel-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: white;
+    /* width: 00px; */
+    text-align: center;
+
+    padding-bottom: 20px;
+}
+
+.carousel-heading {
+    font-family: 'Fondamento', cursive;
+    /* bottom: 500px; */
+    /* padding-bottom: 100px; */
+    color: rgb(235, 213, 20);
+}
+
+#slideshow {
+    text-align: center;
+    background-color: #e16668;
+}
+
+
+.login-style {
+    text-align: center;
+    background-color: #abf0e9;
+}
+
+
+.form-group{
+    text-align: center;
+
+}
+.form-control{
+    text-align: center;
+}
+
+label{
+    display: inline-block;
+}
+#helpId{
+    display: block;
+    text-align: center;
+}
+.submit-btn{
+    padding: 10px;
+    text-align: center;
+}
+
+.hotel-img{
+    /* position: relative; */
+    /* display: inline-block; */
+    padding: 10px;
+    height: 300px;
+    width: 300px;
+    float: left;
+}
+
+.hotel-indi{
+    display: inline-block;
+    padding: 50px;    
+}
+.card-body{
+    display: inline;
+}
+.row{
+    display: flex;
+}
+
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+
+.blog-post{
+    padding: 2rem;
+    
+}
+
+.links{
+    text-align: center; 
+}
+
+.blog-enter{
+    padding: 100px;
+}
+
+.FZF{
+    text-align: center;
+    padding: 20rem;
+}
+
+.PartialNotFound-image{
+    height: 400px;
+    width: 400px;
+}

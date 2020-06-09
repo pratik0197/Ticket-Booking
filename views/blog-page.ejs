@@ -1,0 +1,19 @@
+<%- include('./partials/header.ejs') %>
+
+<body class="links">
+    
+    <%- include('./partials/navbar.ejs') %>
+    <a href="/add-blog">Add a new Blog</a>
+    <% articles.forEach(article=>{ %>
+    
+    <div class="blog-post">
+        <h1><%= article.title %> </h1>
+        <% if(article.content.length < 100){ %>
+        <p><%= article.content %> </p>
+        <% }else{ %>
+        <p><%= article.content.substr(0,100) %>...</p><a href="/blogs/<%=article.title%>">Read More</a>
+        <% } %>
+        <blockquote><%= article.author %> </blockquote>
+    </div>
+    <% }) %>
+    <%- include('./partials/footer.ejs')%>

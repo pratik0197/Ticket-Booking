@@ -1,0 +1,38 @@
+<%- include('./partials/header') %>
+
+<!-- <body> -->
+    <%- include('./partials/navbar') %>
+    <% hotels.forEach(function(hotel){ %>
+    <div class="hotel-indi row">
+        <div class="card col-sm-4">
+            <div class="pull-left ">
+                <img class="card-img-top hotel-img " src="<%= hotel.imgURL %>" alt="<%= hotel.hotelName %> 's image'">
+            </div>
+            <div class="card-body">
+                <h1><%= hotel.hotelName %> </h1>
+                <h2><%= hotel.city %></h2>
+
+                <h3><%= hotel.stars %> <i class="fa fa-star" aria-hidden="true"></i>Hotel </h3>
+                <p>Rooms Available :<%= hotel.rooms %> </p>
+                <div class="contact-details">
+                    Email: <%= hotel.email %><br>
+                    Contact: <%= hotel.contactNumber  %>
+                </div>
+                
+				<div class="btn-group">
+					<form action="/book-hotel" method="POST">
+						<input  type="hidden" value="<%=(hotel.id)%>" name="id">
+						<button type="submit" class="btn btn-outline-primary" style="margin: 15px;">Book</button>
+                	</form>
+					<form action="/cancel-hotel" method="POST">
+						<input type="hidden" value="<%= hotel.id %>" name="id">
+						<button type="submit" class="btn btn-outline-danger" style="margin: 15px;">Cancel</button>
+                	</form>
+				</div>
+                
+            </div>
+            <!-- <p>hello</p> -->
+        </div>
+    </div>
+    <% }) %>
+    <%- include('./partials/footer.ejs') %>

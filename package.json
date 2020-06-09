@@ -1,0 +1,39 @@
+{
+  "name": "ticket-booking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/App.js -e js,ejs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pratik0197/Ticket-Booking.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "13.5.0"
+  },
+  "bugs": {
+    "url": "https://github.com/pratik0197/Ticket-Booking/issues"
+  },
+  "homepage": "https://github.com/pratik0197/Ticket-Booking#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.3",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "handlebars": "^4.7.6",
+    "hbs": "^4.1.1",
+    "mongodb": "^3.5.7",
+    "mongoose": "^5.9.15",
+    "nodemon": "^2.0.4",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
+    "popups": "^1.1.3"
+  }
+}

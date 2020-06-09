@@ -1,0 +1,43 @@
+<%- include('./partials/header') %>
+
+<body>
+    <%- include('./partials/navbar') %>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Checkout Page</h2>
+            <p class="lead">Fill Details to book with <%= name %> , <%= city %>   </p>
+        </div>
+        <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">Enter the details to complete the booking process</h4>
+            <form class="needs-validation was-validated" novalidate="" method="POST" action="/confirm-book">
+                
+                <div class="form-group">
+                  <label for="numRooms">Enter Number of rooms to be booked</label>
+                  <input type="number" class="form-control" name="numRooms" id="" aria-describedby="helpId" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="check-in">Check In Date</label>
+                  <input type="date" name="checkIn" id=""  pattern="\d{4}-\d{2}-\d{2}" class="form-control" aria-describedby="helpId">
+                </div>
+                <div class="form-group">
+                  <label for="check-out">Check Out Date</label>
+                  <input type="date" name="checkOut" id="" class="form-control"   pattern="\d{4}-\d{2}-\d{2}" aria-describedby="helpId">
+                  
+                </div>
+                <h4 class="mb-3">Payment</h4>
+
+                <div class="d-block my-3">
+                    Payment to be done using TBS wallet only. Add to your TBS wallet.
+                </div>
+                <hr class="mb-4">
+                <input type="hidden" name="id" value="<%= id %>"> 
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">© 2020-2021 TBS</p>
+    </footer>
+    </div>
+    <%- include('./partials/footer.ejs') %>

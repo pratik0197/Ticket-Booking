@@ -1,0 +1,84 @@
+<%- include ('partials/header.ejs') %>
+
+<body>
+    <%- include('./partials/navbar')%>
+    <div>
+
+    </div>
+
+    <section id="booking">
+        <div class="container-fluid booking-desc">
+        </div>
+
+    </section>
+
+    <section id="slideshow">
+        <div>
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <span><a href="/hotels/Goa"><img
+                                    src="https://lp-cms-production.imgix.net/2019-06/iStock_000026994380XLarge.jpg?fit=crop&q=40&sharp=10&vib=20&auto=format&ixlib=react-8.6.4"
+                                    class="d-block w-100 carousel-image" alt="goa"></a></span>
+
+                        <h1 class="carousel-heading">Visit Goa</h1>
+                        <p class="carousel-text"> Proin semper nisi eget mauris volutpat aliquam. Fusce felis ex, ornare
+                            a viverra quis, rutrum at enim. Praesent accumsan fringilla erat, ut dictum enim ullamcorper
+                            vitae. Donec ac mi interdum, pretium nisi et, suscipit mauris. Proin sit amet accumsan sem,
+                            eu sollicitudin mi. Integer quis congue purus, a sollicitudin diam. Quisque sollicitudin
+                            pharetra libero. Fusce condimentum dui magna, eu molestie mi scelerisque vel. Etiam sodales
+                            lacinia justo, aliquet bibendum risus sodales consectetur. Mauris ligula mi, rhoncus
+                            pulvinar nunc et, volutpat venenatis leo. Sed condimentum eros mi. Donec non felis ut urna
+                            dictum fermentum. Aenean nunc ex, facilisis vel commodo non, pellentesque vel ligula.
+                            Suspendisse metus ligula, pharetra in nulla quis, congue gravida odio.
+
+                        </p>
+                    </div>
+                    <div class="carousel-item">
+                        <a href="/hotels/Bengaluru"><img
+                                src="https://www.oyorooms.com/blog/wp-content/uploads/2017/10/Feature-Image-min-1.jpg"
+                                class="d-block w-100 carousel-image" alt="bng">
+                        </a>
+                        <h1 class="carousel-heading">Visit Bengaluru</h1>
+                        <p class="carousel-text">Ut porta nec purus malesuada aliquam. Morbi feugiat ex arcu, nec luctus
+                            dui lobortis et. Nam viverra vitae arcu non rhoncus. Praesent a mi vitae sem condimentum
+                            eleifend. Nullam mollis elementum mauris, id varius purus tempor nec. Suspendisse et massa
+                            porta, fringilla augue vitae, fermentum nisi. Vestibulum at neque sapien. Etiam aliquet, est
+                            eu scelerisque facilisis, eros sem tincidunt dui, eget gravida nibh lorem vitae diam. Duis
+                            vel rutrum nunc. Maecenas a sapien et nunc accumsan dignissim nec et nulla. Cras sit amet
+                            mollis felis, eget consequat urna. Praesent at laoreet est, sed posuere tellus.
+
+                        </p>
+                    </div>
+                    <div class="carousel-item">
+                        <a href="/hotels/Hyderabad"><img src="https://etimg.etb2bimg.com/photo/73411431.cms"
+                                class="d-block w-100 carousel-image" alt="hyd"></a>
+
+                        <h1 class="carousel-heading">Visit Hyderabad</h1>
+                        <p class="carousel-text">Pellentesque purus sem, euismod eu tempus at, mollis non sapien. Fusce
+                            eu facilisis felis. Nunc mollis, urna non ullamcorper cursus, lorem tortor vulputate risus,
+                            et tincidunt enim augue ac sapien. Cras ultricies maximus mi, eget ultricies eros malesuada
+                            eget. Sed eu sem mauris. Nam iaculis mi ac odio pellentesque, id consequat ligula vehicula.
+                            Sed vitae ligula ut turpis consequat sagittis. Aenean rhoncus, ipsum nec tincidunt euismod,
+                            sapien mauris mollis eros, at tempus diam nisi a justo.
+
+                        </p>
+                    </div>
+                </div>
+                <a class="carousel-control-prev " href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    <%- include('./partials/footer.ejs') %>
