@@ -19,8 +19,6 @@
                     Contact: <%= hotel.contactNumber  %>
                 </div>
                 <div class="btn-group">
-                
-				<div class="btn-group">
 					<form action="/book-hotel" method="POST">
 						<input  type="hidden" value="<%=(hotel.id)%>" name="id">
 						<button type="submit" class="btn btn-outline-primary" style="margin: 15px;">Book</button>
