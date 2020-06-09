@@ -12,6 +12,9 @@ const path = require('path'); // Changing the File Streucture and hence need to 
 const {
     isObject
 } = require('util');
+const {
+    dateDiff
+} = require('./dateDiff');
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -33,7 +36,7 @@ app.use(passport.initialize()); // Initialise the passport library which does th
 
 app.use(passport.session()); // The main session starts here. Integrate Passport And Express session
 
-mongoose.connect("mongodb://localhost:27017/TBS", {
+mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -44,7 +47,10 @@ const userSchema = new mongoose.Schema({
     password: String,
     hotels: [{
         id: String,
-        rooms: Number
+        rooms: Number,
+        checkIn: String,
+        checkOut: String,
+        price: Number
     }]
 }); // Create a schema for users having username and password, both as strings.
 
@@ -67,17 +73,17 @@ const hotelSchema = mongoose.Schema({
     email: String,
     imgURL: String,
     rooms: Number,
+    price: Number,
     customers: [{
         name: String,
         email: String,
-        price: {
-            type: Number,
-            defualt: 2000
-        },
+        price: Number,
         roomsBooked: {
             type: Number,
             defualt: 1
-        }
+        },
+        checkIn: String,
+        checkOut: String
     }]
 });
 // The schema for hotels . The data fields should be self-explanatory
@@ -149,7 +155,7 @@ app.route("/hotels/:cityName") // route to select hotels filtered by city names
             city: city // find all hotels having city field set to the requested name in the parameters
         }, function (err, docs) {
             res.render('hotels', {
-                loggedIn: true,
+                loggedIn: req.isAuthenticated(),
                 hotels: docs
             }) // render the ejs page, for only the filtered out hotels
         });
@@ -159,7 +165,7 @@ app.route("/hotels") // routes for hotels all hotels
         Hotels.find({}, function (err, docs) {
             res.render('hotels', {
                 hotels: docs,
-                loggedIn: true
+                loggedIn: req.isAuthenticated()
             }); // get all hotels from the dba dn render it in the hotels ejs file. See the ejs file for more reference
         })
     })
@@ -171,7 +177,8 @@ app.route("/hotels") // routes for hotels all hotels
             contactNumber: req.body.phone,
             email: req.body.email,
             imgURL: req.body.imgURL,
-            rooms: parseInt(req.body.rooms)
+            rooms: parseInt(req.body.rooms),
+            price: req.body.price
         });
         newHotel.save(function (err) { // insert the hotel into the hotel collections
             if (err)
@@ -229,28 +236,37 @@ app.route('/confirm-book')
     .post(function (req, res) {
         const id = ObjectId(req.body.id);
         Hotels.findById(id, function (err, docs) {
-            if (err)
+            if (err) 
                 console.log(err);
-            else if (docs.rooms < req.body.numRooms) {
+            else if (docs.rooms < req.body.numRooms) { // Case when we don't have enough rooms in the hotel which are vacant
                 res.redirect('/hotels');
             } else {
-
-                const presentCustomers = docs.customers.filter(item => item.email === req.user.username);
+                // return res.send(typeof req.body.checkIn);
+                const presentCustomers = docs.customers.filter(item => item.email === req.user.username); 
                 if (presentCustomers.length > 0) {
-                    console.log('No');
+                    console.log('No'); // We do not let any user book twice at a hotel and hence this line of code
                 } else {
-                    docs.rooms -= req.body.numRooms;
+                    // Calculate price of the stay based on difference in days. dateDiff implementation in src/dateDiff.js
+                    const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn, req.body.checkOut);
+                    
+                    docs.rooms -= req.body.numRooms; // reduce the number of rooms
                     docs.customers.push({
                         email: req.user.username,
-                        roomsBooked: req.body.numRooms
+                        roomsBooked: req.body.numRooms,
+                        checkIn: req.body.checkIn,
+                        checkOut: req.body.checkOut,
+                        price: calcPrice
                     });
 
-                    docs.save();
+                    docs.save(); // update the hotel database
                     req.user.hotels.push({
                         id: id,
-                        rooms: req.body.numRooms
+                        rooms: req.body.numRooms,
+                        checkIn: req.body.checkIn,
+                        checkOut: req.body.checkOut,
+                        price: calcPrice
                     });
-                    req.user.save();
+                    req.user.save(); // update the user database
                     // console.log(user);
                 }
                 res.redirect('/');
@@ -263,21 +279,21 @@ app.post('/cancel-hotel', function (req, res) {
     Hotels.findById(ide, function (err, docs) {
         // console.log(ide)
         {
-            if (req.isAuthenticated() ) {
-                if(!req.user.hotels.length >0)
+            if (req.isAuthenticated()) { // if user is not authenticated he cannot cancel
+                if (!req.user.hotels.length > 0)
                     return res.redirect('/hotels');
                 let rooms = 0;
 
-                req.user.hotels = req.user.hotels.filter((hotel)=>{
-                    if(hotel.id === ide.toString())
+                req.user.hotels = req.user.hotels.filter((hotel) => {
+                    if (hotel.id === ide.toString())
                         rooms = hotel.rooms;
                     return hotel.id !== ide.toString();
                 })
-                req.user.save();
-                
-                docs.rooms += rooms;
-                docs.customers = docs.customers.filter((customer) => {
-                    return customer.email !== req.user.username
+                req.user.save(); // remove the number of rooms and the hotel details from user's info
+
+                docs.rooms += rooms; // add up the rooms previously booked by the user
+                docs.customers = docs.customers.filter((customer) => { 
+                    return customer.email !== req.user.username // filter out the users
                 });
                 docs.save();
                 res.redirect('/hotels');
@@ -287,9 +303,66 @@ app.post('/cancel-hotel', function (req, res) {
     })
 })
 
+app.get('/manage-page/:id', function (req, res) {
+    const id = ObjectId(req.params.id);
+    Hotels.findById(id, function (error, docs) {
+        if (error)
+            return res.redirect('/')
+        if (docs) {
+            res.render('manager', {
+                loggedIn: true,
+                data: docs // show the hotel managing page to the manager or receptionist of the hotel
+            })
+        } else
+            res.redirect('/')
+    })
+});
+
+app.post('/check-click', function (req, res) { // works when called for checking out a customer from a hotel. accessed via the key provided to the hotel management
+    const id = ObjectId(req.body.hotelId); // get the hotel id
+    const mail = req.body.emailCustomer; // get the customer mail which can be used as a primary key
+    let rooms = 0;
+    user.findOne({
+        username: mail // search by the user's mail
+    }, function (err, docs) {
+        if(err)
+            return res.redirect('/manage-page/'+id);
+        if(docs){
+            docs.hotels = docs.hotels.filter((hotel)=>{
+                if(hotel.id == id.toString())
+                    rooms = hotel.rooms;
+                return hotel.id !== id.toString(); 
+            })
+            docs.save(); // remove the hotel details from the user
+            Hotels.findById(id, function (err, docss) {
+                if (err) {
+                    console.log(err)
+                    return res.redirect('/manage-page/' + id);
+                }
+                if (docss) {
+                    
+                    docss.rooms += rooms;
+                    docss.customers = docss.customers.filter((customer) => {
+                        return customer.email !== mail
+                    });
+                    docss.save(); // remove the user details from the hotel. 
+                    return res.redirect('/manage-page/' + id);
+                } else
+                    return res.redirect('/manage-page/' + id);
+                // res.redirect('/')
+            })
+        }
+        else
+            return res.redirect('/manage-page/'+id);
+        
+    })
+    
+})
 
 
+///////////////////////////////////////////// blogs part start///////////////////////
 
+// Sudhansu will take care of this part. For testing purpose only,the below code has been written 
 const blogSchema = mongoose.Schema({
     title: String,
     content: String,
@@ -317,6 +390,8 @@ app.route('/blogs')
             });
         })
     })
+
+
 app.get('/blogs/:title', function (req, res) {
     blogs.findOne({
         title: req.params.title
@@ -334,6 +409,8 @@ app.get('/blogs/:title', function (req, res) {
         res.send('Could not find the blog')
     })
 })
+
+
 app.get('/add-blog', function (req, res) {
     if (!req.isAuthenticated())
         return res.redirect('/login');
@@ -341,7 +418,7 @@ app.get('/add-blog', function (req, res) {
 })
 
 
-
+///////////////////////////////////////////////// Blog Part Ends/////////////////////////////////////
 
 app.get("*", function (req, res) {
     res.render('404-page', {
@@ -349,7 +426,9 @@ app.get("*", function (req, res) {
     });
 })
 
-let port = 3000;
-app.listen(port, function () {
+let port = process.env.PORT;
+if(port == null || port=="")
+    port = 3000
+app.listen(port, function () {// Start the server
     console.log("Server Listening to port 3000");
 });

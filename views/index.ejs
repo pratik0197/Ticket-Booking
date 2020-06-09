@@ -1,7 +1,7 @@
 <%- include ('partials/header.ejs') %>
 
 <body>
-    <%- include('./partials/navbar')%> 
+    <%- include('./partials/navbar')%>
     <div>
 
     </div>
@@ -22,8 +22,10 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="https://lp-cms-production.imgix.net/2019-06/iStock_000026994380XLarge.jpg?fit=crop&q=40&sharp=10&vib=20&auto=format&ixlib=react-8.6.4"
-                            class="d-block w-100 carousel-image" alt="goa">
+                        <span><a href="/hotels/Goa"><img
+                                    src="https://lp-cms-production.imgix.net/2019-06/iStock_000026994380XLarge.jpg?fit=crop&q=40&sharp=10&vib=20&auto=format&ixlib=react-8.6.4"
+                                    class="d-block w-100 carousel-image" alt="goa"></a></span>
+
                         <h1 class="carousel-heading">Visit Goa</h1>
                         <p class="carousel-text"> Proin semper nisi eget mauris volutpat aliquam. Fusce felis ex, ornare
                             a viverra quis, rutrum at enim. Praesent accumsan fringilla erat, ut dictum enim ullamcorper
@@ -38,8 +40,10 @@
                         </p>
                     </div>
                     <div class="carousel-item">
-                        <img src="https://www.oyorooms.com/blog/wp-content/uploads/2017/10/Feature-Image-min-1.jpg"
-                            class="d-block w-100 carousel-image" alt="bng">
+                        <a href="/hotels/Bengaluru"><img
+                                src="https://www.oyorooms.com/blog/wp-content/uploads/2017/10/Feature-Image-min-1.jpg"
+                                class="d-block w-100 carousel-image" alt="bng">
+                        </a>
                         <h1 class="carousel-heading">Visit Bengaluru</h1>
                         <p class="carousel-text">Ut porta nec purus malesuada aliquam. Morbi feugiat ex arcu, nec luctus
                             dui lobortis et. Nam viverra vitae arcu non rhoncus. Praesent a mi vitae sem condimentum
@@ -52,8 +56,9 @@
                         </p>
                     </div>
                     <div class="carousel-item">
-                        <img src="https://etimg.etb2bimg.com/photo/73411431.cms" class="d-block w-100 carousel-image"
-                            alt="hyd">
+                        <a href="/hotels/Hyderabad"><img src="https://etimg.etb2bimg.com/photo/73411431.cms"
+                                class="d-block w-100 carousel-image" alt="hyd"></a>
+
                         <h1 class="carousel-heading">Visit Hyderabad</h1>
                         <p class="carousel-text">Pellentesque purus sem, euismod eu tempus at, mollis non sapien. Fusce
                             eu facilisis felis. Nunc mollis, urna non ullamcorper cursus, lorem tortor vulputate risus,
@@ -76,4 +81,4 @@
             </div>
         </div>
     </section>
-<%- include('./partials/footer.ejs') %> 
+    <%- include('./partials/footer.ejs') %>
