@@ -373,12 +373,10 @@ app.post('/check-click', function (req, res) { // works when called for checking
     })
 
 })
+////
 
-
-///////////////////////////////////////////// blogs part start///////////////////////
-
-// Sudhansu will take care of this part. For testing purpose only,the below code has been written 
-///////////////////////////////////////////////// Blog Part Ends/////////////////////////////////////
+//// Blogs Here 
+////
 
 app.get("*", function (req, res) {
     res.render('404-page', {
