@@ -155,7 +155,7 @@ app.route("/hotels/:cityName") // route to select hotels filtered by city names
             city: city // find all hotels having city field set to the requested name in the parameters
         }, function (err, docs) {
             res.render('hotels', {
-                loggedIn: true,
+                loggedIn: req.isAuthenticated(),
                 hotels: docs
             }) // render the ejs page, for only the filtered out hotels
         });
@@ -165,7 +165,7 @@ app.route("/hotels") // routes for hotels all hotels
         Hotels.find({}, function (err, docs) {
             res.render('hotels', {
                 hotels: docs,
-                loggedIn: true
+                loggedIn: req.isAuthenticated()
             }); // get all hotels from the dba dn render it in the hotels ejs file. See the ejs file for more reference
         })
     })
