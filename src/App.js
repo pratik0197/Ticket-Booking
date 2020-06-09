@@ -36,7 +36,7 @@ app.use(passport.initialize()); // Initialise the passport library which does th
 
 app.use(passport.session()); // The main session starts here. Integrate Passport And Express session
 
-mongoose.connect("mongodb://localhost:27017/TBS", {
+mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -426,7 +426,9 @@ app.get("*", function (req, res) {
     });
 })
 
-let port = 3000;
+let port = process.env.PORT;
+if(port == null || port=="")
+    port = 3000
 app.listen(port, function () {// Start the server
     console.log("Server Listening to port 3000");
 });
