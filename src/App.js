@@ -146,7 +146,12 @@ app.route('/signup')
         });
     });
 
-
+app.post('/searchQuery',function(req,res){
+    if(!req.isAuthenticated())
+        return res.redirect('/login');
+    const city = req.body.city;
+    res.redirect('/hotels/'+city);
+})
 // Route to get hotels sorted by particular city
 app.route("/hotels/:cityName") // route to select hotels filtered by city names
     .get(function (req, res) {
