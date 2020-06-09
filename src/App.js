@@ -378,61 +378,6 @@ app.post('/check-click', function (req, res) { // works when called for checking
 ///////////////////////////////////////////// blogs part start///////////////////////
 
 // Sudhansu will take care of this part. For testing purpose only,the below code has been written 
-const blogSchema = mongoose.Schema({
-    title: String,
-    content: String,
-    author: String
-});
-const blogs = mongoose.model('Blog', blogSchema);
-app.route('/blogs')
-    .post(function (req, res) {
-        const title = req.body.title;
-        const content = req.body.content;
-        const author = req.body.author;
-        const newBlog = new blogs({
-            title: title,
-            content: content,
-            author: author
-        });
-        newBlog.save();
-        res.redirect('/blogs')
-    })
-    .get(function (req, res) {
-        blogs.find({}, function (err, docs) {
-            res.render('blog-page', {
-                loggedIn: req.isAuthenticated(),
-                articles: docs
-            });
-        })
-    })
-
-
-app.get('/blogs/:title', function (req, res) {
-    blogs.findOne({
-        title: req.params.title
-    }, function (error, docs) {
-        if (error)
-            return res.send('Error occured');
-
-        if (docs) {
-            return res.render('indi-blog', {
-                title: docs.title,
-                content: docs.content,
-                author: docs.author
-            })
-        }
-        res.send('Could not find the blog')
-    })
-})
-
-
-app.get('/add-blog', function (req, res) {
-    if (!req.isAuthenticated())
-        return res.redirect('/login');
-    res.render('blog-addition-page');
-})
-
-
 ///////////////////////////////////////////////// Blog Part Ends/////////////////////////////////////
 
 app.get("*", function (req, res) {
