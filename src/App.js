@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     hotels: [{
         id: String,
+        name: String,
         rooms: Number,
         checkIn: String,
         checkOut: String,
@@ -146,11 +147,20 @@ app.route('/signup')
         });
     });
 
-app.post('/searchQuery',function(req,res){
-    if(!req.isAuthenticated())
+app.get('/bookings', function (req, res) {
+    if (!req.isAuthenticated())
+        return res.redirect('/login')
+    res.render('bookings', {
+        loggedIn: req.isAuthenticated(),
+        data : req.user.hotels
+    })
+})
+
+app.post('/searchQuery', function (req, res) {
+    if (!req.isAuthenticated())
         return res.redirect('/login');
     const city = req.body.city;
-    res.redirect('/hotels/'+city);
+    res.redirect('/hotels/' + city);
 })
 // Route to get hotels sorted by particular city
 app.route("/hotels/:cityName") // route to select hotels filtered by city names
@@ -241,19 +251,19 @@ app.route('/confirm-book')
     .post(function (req, res) {
         const id = ObjectId(req.body.id);
         Hotels.findById(id, function (err, docs) {
-            if (err) 
+            if (err)
                 console.log(err);
             else if (docs.rooms < req.body.numRooms) { // Case when we don't have enough rooms in the hotel which are vacant
                 res.redirect('/hotels');
             } else {
                 // return res.send(typeof req.body.checkIn);
-                const presentCustomers = docs.customers.filter(item => item.email === req.user.username); 
+                const presentCustomers = docs.customers.filter(item => item.email === req.user.username);
                 if (presentCustomers.length > 0) {
                     console.log('No'); // We do not let any user book twice at a hotel and hence this line of code
                 } else {
                     // Calculate price of the stay based on difference in days. dateDiff implementation in src/dateDiff.js
                     const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn, req.body.checkOut);
-                    
+
                     docs.rooms -= req.body.numRooms; // reduce the number of rooms
                     docs.customers.push({
                         email: req.user.username,
@@ -266,6 +276,7 @@ app.route('/confirm-book')
                     docs.save(); // update the hotel database
                     req.user.hotels.push({
                         id: id,
+                        name:docs.hotelName,
                         rooms: req.body.numRooms,
                         checkIn: req.body.checkIn,
                         checkOut: req.body.checkOut,
@@ -297,7 +308,7 @@ app.post('/cancel-hotel', function (req, res) {
                 req.user.save(); // remove the number of rooms and the hotel details from user's info
 
                 docs.rooms += rooms; // add up the rooms previously booked by the user
-                docs.customers = docs.customers.filter((customer) => { 
+                docs.customers = docs.customers.filter((customer) => {
                     return customer.email !== req.user.username // filter out the users
                 });
                 docs.save();
@@ -330,13 +341,13 @@ app.post('/check-click', function (req, res) { // works when called for checking
     user.findOne({
         username: mail // search by the user's mail
     }, function (err, docs) {
-        if(err)
-            return res.redirect('/manage-page/'+id);
-        if(docs){
-            docs.hotels = docs.hotels.filter((hotel)=>{
-                if(hotel.id == id.toString())
+        if (err)
+            return res.redirect('/manage-page/' + id);
+        if (docs) {
+            docs.hotels = docs.hotels.filter((hotel) => {
+                if (hotel.id == id.toString())
                     rooms = hotel.rooms;
-                return hotel.id !== id.toString(); 
+                return hotel.id !== id.toString();
             })
             docs.save(); // remove the hotel details from the user
             Hotels.findById(id, function (err, docss) {
@@ -345,7 +356,7 @@ app.post('/check-click', function (req, res) { // works when called for checking
                     return res.redirect('/manage-page/' + id);
                 }
                 if (docss) {
-                    
+
                     docss.rooms += rooms;
                     docss.customers = docss.customers.filter((customer) => {
                         return customer.email !== mail
@@ -356,12 +367,11 @@ app.post('/check-click', function (req, res) { // works when called for checking
                     return res.redirect('/manage-page/' + id);
                 // res.redirect('/')
             })
-        }
-        else
-            return res.redirect('/manage-page/'+id);
-        
+        } else
+            return res.redirect('/manage-page/' + id);
+
     })
-    
+
 })
 
 
@@ -432,8 +442,8 @@ app.get("*", function (req, res) {
 })
 
 let port = process.env.PORT;
-if(port == null || port=="")
+if (port == null || port == "")
     port = 3000
-app.listen(port, function () {// Start the server
+app.listen(port, function () { // Start the server
     console.log("Server Listening to port 3000");
 });
