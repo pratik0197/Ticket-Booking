@@ -18,7 +18,8 @@
                     Email: <%= hotel.email %><br>
                     Contact: <%= hotel.contactNumber  %>
                 </div>
-                <div class="btn-group">
+                
+				<div class="btn-group">
 					<form action="/book-hotel" method="POST">
 						<input  type="hidden" value="<%=(hotel.id)%>" name="id">
 						<button type="submit" class="btn btn-outline-primary" style="margin: 15px;">Book</button>
@@ -28,8 +29,10 @@
 						<button type="submit" class="btn btn-outline-danger" style="margin: 15px;">Cancel</button>
                 	</form>
 				</div>
+                
             </div>
             <!-- <p>hello</p> -->
+        </div>
     </div>
     <% }) %>
     <%- include('./partials/footer.ejs') %>
