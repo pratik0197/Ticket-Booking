@@ -129,6 +129,19 @@ label{
     height: 400px;
     width: 400px;
 }
+
 .card{
 	width: 30%
+}
+
+#log_container{
+    margin: 100px auto;
+}
+
+.input{
+    margin: 20px
+}
+
+.container{
+    float: left;
 }
