@@ -1,23 +1,22 @@
 require('dotenv').config(); // contains secure details about hash and salt to secure the password . Do not touch this, if you want your DB to be consistent.
-const 	express 		= require('express'), // Includes Express, backend web framework to  be used with Node.js
-	  	bodyParser 		= require('body-parser'), // library to parse details in the forms
-	  	ejs 			= require('ejs'),// embedded javascript to write javascript inside HTML to make it more robust and help in reusing a single piece of HTML code in  multiple files
- 	  	mongoose 		= require('mongoose'),// A medium for operating on our mongodb database using Node.js
- 		passport 		= require('passport'),// An authentication and cookies library which helps in making passwords secure and hashed, adding salting.
- 		passportLocal 	= require('passport-local'),// Used internally by passport. No explicit calls made in code yet
- 		session 		= require('express-session'),// Saves user login session until logged out.
- 		passportLocalMongoose = require('passport-local-mongoose'),// used to combine mongoose and passport to automatically save users into the Database.
- 		ObjectId 		= require('mongodb').ObjectID,// Required to convert string into an objectId
- 		path 			= require('path'),//Changing the File Streucture and hence need to modify some file strcutre
-		methodOverride  = require("method-override"),
-    	expressSanitizer= require("express-sanitizer");
+const express = require('express'); // Includes Express, backend web framework to  be used with Node.js
+const bodyParser = require('body-parser'); // library to parse details in the forms
+const ejs = require('ejs'); // embedded javascript to write javascript inside HTML to make it more robust and help in reusing a single piece of HTML code in  multiple files
+const mongoose = require('mongoose'); // A medium for operating on our mongodb database using Node.js
+const passport = require('passport'); // An authentication and cookies library which helps in making passwords secure and hashed, adding salting.
+const passportLocal = require('passport-local'); // Used internally by passport. No explicit calls made in code yet
+const session = require('express-session'); // Saves user login session until logged out.
+const passportLocalMongoose = require('passport-local-mongoose'); // used to combine mongoose and passport to automatically save users into the Database.
+const ObjectId = require('mongodb').ObjectID; // Required to convert string into an objectId
+const path = require('path'); // Changing the File Streucture and hence need to modify some file strcutre
 const {
     isObject
 } = require('util');
 const {
     dateDiff
 } = require('./dateDiff');
-
+const methodOverride = require("method-override");
+const expressSanitizer = require("express-sanitizer");
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -41,7 +40,7 @@ app.use(passport.initialize()); // Initialise the passport library which does th
 
 app.use(passport.session()); // The main session starts here. Integrate Passport And Express session
 
-mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS",{
+mongoose.connect("mongodb+srv://admin-pratik:2zRzRbVAwHKxhbnh@cluster0-0iz6t.mongodb.net/TBS", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -157,7 +156,7 @@ app.get('/bookings', function (req, res) {
         return res.redirect('/login')
     res.render('bookings', {
         loggedIn: req.isAuthenticated(),
-        data : req.user.hotels
+        data: req.user.hotels
     })
 })
 
@@ -233,7 +232,8 @@ app.route('/book-hotel')
 
 app.route('/checkout/:passId') // Checkout page based on id of the hotel
     .get(function (req, res) { // Gets the checkout route
-
+        if (!req.isAuthenticated())
+            return res.redirect('/login')
         let id = ObjectId(req.params.passId);
         // let foundHotel = null;
         Hotels.findById(id, function (err, docs) { // Searches the hotel.
@@ -267,7 +267,8 @@ app.route('/confirm-book')
                     console.log('No'); // We do not let any user book twice at a hotel and hence this line of code
                 } else {
                     // Calculate price of the stay based on difference in days. dateDiff implementation in src/dateDiff.js
-                    const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn, req.body.checkOut);
+                    const diff = dateDiff(req.body.checkIn, req.body.checkOut);
+                    const calcPrice = docs.price * req.body.numRooms * diff;
 
                     docs.rooms -= req.body.numRooms; // reduce the number of rooms
                     docs.customers.push({
@@ -281,7 +282,7 @@ app.route('/confirm-book')
                     docs.save(); // update the hotel database
                     req.user.hotels.push({
                         id: id,
-                        name:docs.hotelName,
+                        name: docs.hotelName,
                         rooms: req.body.numRooms,
                         checkIn: req.body.checkIn,
                         checkOut: req.body.checkOut,
@@ -346,12 +347,11 @@ app.post('/check-click', function (req, res) { // works when called for checking
     user.findOne({
         username: mail // search by the user's mail
     }, function (err, docs) {
-        if(err){
-			return res.redirect('/manage-page/'+id);
-		}
-        if(docs){
-            docs.hotels = docs.hotels.filter((hotel)=>{
-                if(hotel.id == id.toString())
+        if (err)
+            return res.redirect('/manage-page/' + id);
+        if (docs) {
+            docs.hotels = docs.hotels.filter((hotel) => {
+                if (hotel.id == id.toString())
                     rooms = hotel.rooms;
                 return hotel.id !== id.toString();
             })
@@ -373,96 +373,109 @@ app.post('/check-click', function (req, res) { // works when called for checking
                     return res.redirect('/manage-page/' + id);
                 // res.redirect('/')
             })
-        }
-        else{
-			return res.redirect('/manage-page/' + id);
-		}     
-    });
-    
-});
+        } else
+            return res.redirect('/manage-page/' + id);
 
+    })
 
+})
+////
 
 //MONGOOSE Model Config.
 var blogSchema = new mongoose.Schema({
     title: String,
     image: String,
     body: String,
-    created: {type:Date, default: Date.now}
+    created: {
+        type: Date,
+        default: Date.now
+    }
 });
 
-var Blog = mongoose.model("Blog",blogSchema);
+var Blog = mongoose.model("Blog", blogSchema);
 
-app.get("/blogs",function(req,res){
-    Blog.find({},function(err,blogs){
-        if(err){
+app.get("/blogs", function (req, res) {
+    Blog.find({}, function (err, blogs) {
+        if (err) {
             console.log("ERROR!");
-        }else{
-            res.render("blog_index",{blogs: blogs});
+        } else {
+            res.render("blog_index", {
+                blogs: blogs
+            });
         }
     })
 })
 
-app.get("/blogs/new",function(req,res) {
+app.get("/blogs/new", function (req, res) {
     res.render("blog_new");
 })
 
-app.post("/blogs",function(req,res){
+app.post("/blogs", function (req, res) {
     //sanitizing the post
     req.body.blog.body = req.sanitize(req.body.blog.body);
-    
-    Blog.create(req.body.blog,function(err,newBlog){
-        if(err){
+
+    Blog.create(req.body.blog, function (err, newBlog) {
+        if (err) {
             res.render("blog_new");
-        }else{
+        } else {
             res.redirect("/blogs");
         }
     });
 });
 
-app.get("/blogs/:id",function(req,res){
-    Blog.findById(req.params.id,function(err,foundBlog){
-        if(err){
+app.get("/blogs/:id", function (req, res) {
+    Blog.findById(req.params.id, function (err, foundBlog) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
-            res.render("blog_show",{blog:foundBlog});
+        } else if (!req.isAuthenticated())
+            return res.redirect('/login');
+        else {
+            res.render("blog_show", {
+                blog: foundBlog,
+                user: req.user.username
+            });
         }
     })
 })
 
 //EDIT
-app.get("/blogs/:id/edit",function(req,res){
-    Blog.findById(req.params.id,function(err,foundBlog){
-        if(err){
+app.get("/blogs/:id/edit", function (req, res) {
+    Blog.findById(req.params.id, function (err, foundBlog) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
-            res.render("blog_edit",{blog:foundBlog});
+        } else {
+            res.render("blog_edit", {
+                blog: foundBlog
+            });
         }
     })
 })
 
-
-app.put("/blogs/:id",function(req,res){
+app.put("/blogs/:id", function (req, res) {
     req.body.blog.body = req.sanitize(req.body.blog.body);
 
-    Blog.findByIdAndUpdate(req.params.id, req.body.blog,function(err,updatedBlog){
-        if(err){
+    Blog.findByIdAndUpdate(req.params.id, req.body.blog, function (err, updatedBlog) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
-            res.redirect("/blogs/"+req.params.id);
+        } else {
+            res.redirect("/blogs/" + req.params.id);
         }
     })
 })
 
-app.delete("/blogs/:id",function(req,res){
-    Blog.findByIdAndRemove(req.params.id,function(err){
-        if(err){
+app.delete("/blogs/:id", function (req, res) {
+    Blog.findByIdAndRemove(req.params.id, function (err) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
+        } else {
             res.redirect("/blogs");
         }
     })
 })
+
+
+//// Blogs Here 
+////
 
 app.get("*", function (req, res) {
     res.render('404-page', {
