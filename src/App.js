@@ -268,8 +268,7 @@ app.route('/confirm-book')
                 } else {
                     // Calculate price of the stay based on difference in days. dateDiff implementation in src/dateDiff.js
                     const diff = dateDiff(req.body.checkIn, req.body.checkOut);
-                    console.log(diff);
-                    const calcPrice = docs.price * req.body.numRooms * 250;
+                    const calcPrice = docs.price * req.body.numRooms * diff;
 
                     docs.rooms -= req.body.numRooms; // reduce the number of rooms
                     docs.customers.push({
