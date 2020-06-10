@@ -15,8 +15,8 @@ const {
 const {
     dateDiff
 } = require('./dateDiff');
-const methodOverride  = require("method-override");
-const expressSanitizer= require("express-sanitizer");
+const methodOverride = require("method-override");
+const expressSanitizer = require("express-sanitizer");
 const app = express(); // We made an instance of the express framework here and will use it to further work with any type of requests.
 
 
@@ -156,7 +156,7 @@ app.get('/bookings', function (req, res) {
         return res.redirect('/login')
     res.render('bookings', {
         loggedIn: req.isAuthenticated(),
-        data : req.user.hotels
+        data: req.user.hotels
     })
 })
 
@@ -232,7 +232,8 @@ app.route('/book-hotel')
 
 app.route('/checkout/:passId') // Checkout page based on id of the hotel
     .get(function (req, res) { // Gets the checkout route
-
+        if (!req.isAuthenticated())
+            return res.redirect('/login')
         let id = ObjectId(req.params.passId);
         // let foundHotel = null;
         Hotels.findById(id, function (err, docs) { // Searches the hotel.
@@ -266,7 +267,9 @@ app.route('/confirm-book')
                     console.log('No'); // We do not let any user book twice at a hotel and hence this line of code
                 } else {
                     // Calculate price of the stay based on difference in days. dateDiff implementation in src/dateDiff.js
-                    const calcPrice = docs.price * req.body.numRooms * dateDiff(req.body.checkIn, req.body.checkOut);
+                    const diff = dateDiff(req.body.checkIn, req.body.checkOut);
+                    console.log(diff);
+                    const calcPrice = docs.price * req.body.numRooms * 250;
 
                     docs.rooms -= req.body.numRooms; // reduce the number of rooms
                     docs.customers.push({
@@ -280,7 +283,7 @@ app.route('/confirm-book')
                     docs.save(); // update the hotel database
                     req.user.hotels.push({
                         id: id,
-                        name:docs.hotelName,
+                        name: docs.hotelName,
                         rooms: req.body.numRooms,
                         checkIn: req.body.checkIn,
                         checkOut: req.body.checkOut,
@@ -384,76 +387,88 @@ var blogSchema = new mongoose.Schema({
     title: String,
     image: String,
     body: String,
-    created: {type:Date, default: Date.now}
+    created: {
+        type: Date,
+        default: Date.now
+    }
 });
 
-var Blog = mongoose.model("Blog",blogSchema);
+var Blog = mongoose.model("Blog", blogSchema);
 
-app.get("/blogs",function(req,res){
-    Blog.find({},function(err,blogs){
-        if(err){
+app.get("/blogs", function (req, res) {
+    Blog.find({}, function (err, blogs) {
+        if (err) {
             console.log("ERROR!");
-        }else{
-            res.render("blog_index",{blogs: blogs});
+        } else {
+            res.render("blog_index", {
+                blogs: blogs
+            });
         }
     })
 })
 
-app.get("/blogs/new",function(req,res) {
+app.get("/blogs/new", function (req, res) {
     res.render("blog_new");
 })
 
-app.post("/blogs",function(req,res){
+app.post("/blogs", function (req, res) {
     //sanitizing the post
     req.body.blog.body = req.sanitize(req.body.blog.body);
-    
-    Blog.create(req.body.blog,function(err,newBlog){
-        if(err){
+
+    Blog.create(req.body.blog, function (err, newBlog) {
+        if (err) {
             res.render("blog_new");
-        }else{
+        } else {
             res.redirect("/blogs");
         }
     });
 });
 
-app.get("/blogs/:id",function(req,res){
-    Blog.findById(req.params.id,function(err,foundBlog){
-        if(err){
+app.get("/blogs/:id", function (req, res) {
+    Blog.findById(req.params.id, function (err, foundBlog) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
-            res.render("blog_show",{blog:foundBlog});
+        } else if (!req.isAuthenticated())
+            return res.redirect('/login');
+        else {
+            res.render("blog_show", {
+                blog: foundBlog,
+                user: req.user.username
+            });
         }
     })
 })
 
 //EDIT
-app.get("/blogs/:id/edit",function(req,res){
-    Blog.findById(req.params.id,function(err,foundBlog){
-        if(err){
+app.get("/blogs/:id/edit", function (req, res) {
+    Blog.findById(req.params.id, function (err, foundBlog) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
-            res.render("blog_edit",{blog:foundBlog});
+        } else {
+            res.render("blog_edit", {
+                blog: foundBlog
+            });
         }
     })
 })
 
-app.put("/blogs/:id",function(req,res){
+app.put("/blogs/:id", function (req, res) {
     req.body.blog.body = req.sanitize(req.body.blog.body);
 
-    Blog.findByIdAndUpdate(req.params.id, req.body.blog,function(err,updatedBlog){
-        if(err){
+    Blog.findByIdAndUpdate(req.params.id, req.body.blog, function (err, updatedBlog) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
-            res.redirect("/blogs/"+req.params.id);
+        } else {
+            res.redirect("/blogs/" + req.params.id);
         }
     })
 })
 
-app.delete("/blogs/:id",function(req,res){
-    Blog.findByIdAndRemove(req.params.id,function(err){
-        if(err){
+app.delete("/blogs/:id", function (req, res) {
+    Blog.findByIdAndRemove(req.params.id, function (err) {
+        if (err) {
             res.redirect("/blogs");
-        }else{
+        } else {
             res.redirect("/blogs");
         }
     })
